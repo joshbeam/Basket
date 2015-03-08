@@ -15,6 +15,17 @@
 			resolve: {
 				listsPrep: listsPrep,
 			}
+		})
+		.when('/list/:listName',{
+			templateUrl: 'list.html',
+			controller: 'ListController',
+			controllerAs: 'vm',
+			resolve: {
+				itemsPrep: itemsPrep	
+			}
+		})
+		.otherwise({
+			redirectTo: '/'
 		});
 	}
 			
@@ -22,6 +33,12 @@
 	
 	function listsPrep(lists) {
 		return lists.populate();
+	}
+	
+	itemsPrep.$inject = ['items'];
+	
+	function itemsPrep(items) {
+		return items.populate();	
 	}
 })();
 

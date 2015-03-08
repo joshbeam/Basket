@@ -13,8 +13,14 @@
 		vm.newListName = '';
 		vm.creatingNewList = false;
 		vm.listsFunctions = {
-			create: create
+			startCreating: startCreating,
+			create: create,
+			cancel: cancel
 		};
+		
+		function startCreating() {
+			vm.creatingNewList = true;	
+		}
 		
 		function create() {
 			lists.add({
@@ -22,9 +28,10 @@
 			});
 			
 			vm.newListName = '';
-			vm.creatingNewList = false;
-		}
+		}		
 		
-		console.log(vm.lists);
+		function cancel() {
+			vm.creatingNewList = false;	
+		}
 	}
 })();

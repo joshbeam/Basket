@@ -1,38 +1,57 @@
 (function() {
-//	'use strict'
-//	
-//	angular.module('Basket')
-//	  .controller('ListController',['$scope','items',function($scope,items) {
-//		items.populate();
-//
+	'use strict';
+	
+	angular
+		.module('Basket')
+		.controller('ListController',ListController);
+	
+	ListController.$inject = ['$scope','items','$routeParams','itemsPrep'];
+	
+	function ListController($scope,items,$routeParams,itemsPrep) {
+		var vm = this;
+
+		vm.items = itemsPrep;
+		vm.listName = $routeParams.listName;
+		vm.newItemInput = false;
+		vm.newItemDescription = '';
+		vm.itemFunctions = {
+			createNewItem: createNewItem,
+			add: add,
+			togglePurchased: togglePurchased,
+			clearComplete: clearComplete
+		};
+		
+		function createNewItem() {
+			vm.newItemInput = true;	
+		}
+		
+		function add(desc) {
+			console.log($routeParams.listName);
+			
+			items.add({
+				description: desc,
+				comments: '',
+				list: vm.listName
+			});
+			
+			vm.newItemDescription = '';
+		}
+		
+		function togglePurchased(item) {
+			var purchased = !item.get('purchased');
+			
+			items.purchased(item.$$hashKey,purchased);
+		}
+		
+		function clearComplete() {
+			items.clearComplete();	
+		}
+	}
+	
+	
 //		$scope.$watch(function() {
 //		  return items.get('all');
 //		}, function(newVal, oldVal) {
 //		  $scope.list = newVal;
 //		});
-//
-//		$scope.itemFunctions = {
-//		  createNewItem: function() {
-//			$scope.newItemInput = true;
-//		  },
-//		  add: function(desc) {
-//			$scope.newItemInput = false;
-//
-//			items.add({
-//			  description: desc,
-//			  comments: ''
-//			});
-//
-//			$scope.newItemDescription = '';
-//		  },
-//		  togglePurchased: function(item) {
-//			var purchased = !item.get('purchased');
-//			items.purchased(item.$$hashKey,purchased);
-//		  },
-//		  clearComplete: function() {
-//			items.clearComplete();
-//		  }
-//		};
-//
-//	  }]);
 })();

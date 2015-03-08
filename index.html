@@ -3,7 +3,7 @@
 <head>
 	<link rel="stylesheet" href="src/styles/style.css" />
   	<meta charset="utf-8">
-  	<title>JS Bin</title>
+  	<title>Basket</title>
 </head>
 <body ng-app="Basket">
 	<h1>Basket</h1>
@@ -20,42 +20,52 @@
 	<script src="src/scripts/app/helpers/local-store.factory.js"></script>
 	<script src="src/scripts/app/lists/lists.factory.js"></script>
 	<script src="src/scripts/app/lists/list.factory.js"></script>
+	<script src="src/scripts/app/lists/list-controller.controller.js"></script>
 	<script src="src/scripts/app/lists/lists-controller.controller.js"></script>
 	
 	<script type="text/ng-template" id="lists.html">
-		<h2>Shopping Lists</h2>
-		<ul class="unstyled">
-			<li ng-repeat="list in vm.lists">{{list.name}}</li>
-			<li ng-show="vm.creatingNewList">
-				<input type="text" ng-model="vm.newListName" />
-				<button ng-click="vm.listsFunctions.create()">Create</button>
+		<h2>Shopping Lists <small>viewing all</small></h2>
+		<ul class="unstyled item-list">
+			<li ng-repeat="list in vm.lists">
+				<a class="block-link" href="#list/{{list.name}}">{{list.name}}</a>
 			</li>
 		</ul>
+		<div class="create-box" ng-show="vm.creatingNewList">
+			<input type="text" ng-model="vm.newListName" />
+			<button class="good" ng-click="vm.listsFunctions.create()">Create</button>
+			<button class="bad" ng-click="vm.listsFunctions.cancel()">Cancel</button>		
+		</div>
 		
 		
-		<button ng-click="vm.creatingNewList = true">Create New Shopping List</button>
+		<button ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
 	</script>
 	
 	<script type="text/ng-template" id="list.html">
-		<ul shopping-list class="unstyled">
-		<li ng-repeat="item in list">
+		<h2>&ldquo;{{vm.listName}}&rdquo; <small>current shopping list</small></h2>
+		<nav>
+			<ul class="unstyled">
+				<li><a class="button-link" href="#/">&laquo; Back</a></li>
+			</ul>
+		</nav>
+		<ul shopping-list class="unstyled item-list">
+		<li ng-repeat="item in vm.items">
 			<span ng-class="{purchased: item.purchased}" ng-click="">
 				{{item.description}}
 			</span>
 		</li>
-		<li ng-show="newItemInput">
-			<input type="text" ng-model="newItemDescription" />
-			<button ng-click="itemFunctions.add(newItemDescription)">Add it!</button>
+		<li ng-show="vm.newItemInput">
+			<input type="text" ng-model="vm.newItemDescription" />
+			<button ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add it!</button>
 		</li>
 		</ul>   
-		<ul class="unstyled">
+		<ul class="unstyled inline-list">
 			<li>
-				<button ng-click="itemFunctions.createNewItem()">
+				<button ng-click="vm.itemFunctions.createNewItem()">
 					Add New Item
 				</button>
 			</li>
 			<li>
-			<button ng-click="itemFunctions.clearComplete()">
+			<button ng-click="vm.itemFunctions.clearComplete()">
 				Clear Completed Items
 			</button>
 		</li>

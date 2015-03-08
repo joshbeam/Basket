@@ -44,9 +44,21 @@
 		}
 
 		function add(props) {
-			lists.push(new List(props));
+			var exists = false;
+			
+			angular.forEach(lists,function(list) {
+				if(props.name === list.name) {
+					exists = true;
+				}
+			});
+			
+			if(exists === false) {
+				lists.push(new List(props));
 
-			this.update();			
+				this.update();		
+			} else {
+				alert('Choose a unique name');
+			}
 		}
 							
 		function update() {

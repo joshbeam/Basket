@@ -14,6 +14,7 @@
 			this.description = props.description;
 			this.comments = props.comments;
 			this.purchased = false;
+			this.list = props.list;
 		}
 
 		return Service;
