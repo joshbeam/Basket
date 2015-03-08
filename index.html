@@ -8,17 +8,19 @@
 <body ng-app="Basket">
 	<h1>Basket</h1>
 	<div ng-view></div>
+	
+	<!-- will run a build to concat and minify all of these into one js file -->
 	<script src="src/scripts/lib/angular/angular.min.js"></script>
 	<script src="src/scripts/lib/angular/angular-route.min.js"></script>
 	
-	<script src="src/scripts/app/basket.module.js"></script>
-	<script src="src/scripts/app/basket.routes.js"></script>
-	<script src="src/scripts/app/item.factory.js"></script>
-	<script src="src/scripts/app/items.factory.js"></script>
-	<script src="src/scripts/app/local-store.factory.js"></script>
-	<script src="src/scripts/app/lists.factory.js"></script>
-	<script src="src/scripts/app/list.factory.js"></script>
-	<script src="src/scripts/app/lists-controller.controller.js"></script>
+	<script src="src/scripts/app/basket/basket.module.js"></script>
+	<script src="src/scripts/app/basket/basket.routes.js"></script>
+	<script src="src/scripts/app/items/item.factory.js"></script>
+	<script src="src/scripts/app/items/items.factory.js"></script>
+	<script src="src/scripts/app/helpers/local-store.factory.js"></script>
+	<script src="src/scripts/app/lists/lists.factory.js"></script>
+	<script src="src/scripts/app/lists/list.factory.js"></script>
+	<script src="src/scripts/app/lists/lists-controller.controller.js"></script>
 	
 	<script type="text/ng-template" id="lists.html">
 		<h2>Shopping Lists</h2>

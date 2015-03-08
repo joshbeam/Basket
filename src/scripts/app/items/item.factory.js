@@ -1,5 +1,5 @@
 (function() {
-	'use strict'
+	'use strict';
 	
 	angular.module('Basket')
 		.factory('Item',Item);
@@ -23,7 +23,7 @@
 		function get(prop) {
 			if(prop in this) {
 				return this[prop];
-			}			  
+			}
 		}
 
 		function set(prop,val) {

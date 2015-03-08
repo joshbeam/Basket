@@ -15,7 +15,7 @@
 			resolve: {
 				listsPrep: listsPrep,
 			}
-		})	
+		});
 	}
 			
 	listsPrep.$inject = ['lists'];
