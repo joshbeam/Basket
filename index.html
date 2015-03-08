@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="src/styles/style.css" />
+  	<meta charset="utf-8">
+  	<title>JS Bin</title>
+</head>
+<body ng-app="Basket">
+	<h1>Basket</h1>
+	<div ng-view></div>
+	<script src="src/scripts/lib/angular/angular.min.js"></script>
+	<script src="src/scripts/lib/angular/angular-route.min.js"></script>
+	
+	<script src="src/scripts/app/basket.module.js"></script>
+	<script src="src/scripts/app/basket.routes.js"></script>
+	<script src="src/scripts/app/item.factory.js"></script>
+	<script src="src/scripts/app/items.factory.js"></script>
+	<script src="src/scripts/app/local-store.factory.js"></script>
+	<script src="src/scripts/app/lists.factory.js"></script>
+	<script src="src/scripts/app/list.factory.js"></script>
+	<script src="src/scripts/app/lists-controller.controller.js"></script>
+	
+	<script type="text/ng-template" id="lists.html">
+		<h2>Shopping Lists</h2>
+		<ul class="unstyled">
+			<li ng-repeat="list in vm.lists">{{list.name}}</li>
+			<li ng-show="vm.creatingNewList">
+				<input type="text" ng-model="vm.newListName" />
+				<button ng-click="vm.listsFunctions.create()">Create</button>
+			</li>
+		</ul>
+		
+		
+		<button ng-click="vm.creatingNewList = true">Create New Shopping List</button>
+	</script>
+	
+	<script type="text/ng-template" id="list.html">
+		<ul shopping-list class="unstyled">
+		<li ng-repeat="item in list">
+			<span ng-class="{purchased: item.purchased}" ng-click="">
+				{{item.description}}
+			</span>
+		</li>
+		<li ng-show="newItemInput">
+			<input type="text" ng-model="newItemDescription" />
+			<button ng-click="itemFunctions.add(newItemDescription)">Add it!</button>
+		</li>
+		</ul>   
+		<ul class="unstyled">
+			<li>
+				<button ng-click="itemFunctions.createNewItem()">
+					Add New Item
+				</button>
+			</li>
+			<li>
+			<button ng-click="itemFunctions.clearComplete()">
+				Clear Completed Items
+			</button>
+		</li>
+		</ul>
+	</script>	
+</body>
+</html>
