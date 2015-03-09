@@ -5,13 +5,14 @@
 		.module('Basket')
 		.controller('ListController',ListController);
 	
-	ListController.$inject = ['$scope','items','$routeParams','itemsPrep'];
+	ListController.$inject = ['items','$routeParams'];
 	
-	function ListController($scope,items,$routeParams,itemsPrep) {
+	function ListController(items,$routeParams) {
 		var vm = this;
 
-		vm.items = itemsPrep;
 		vm.listName = $routeParams.listName;
+		console.log(vm.listName);
+		vm.items = items.populate();
 		vm.newItemInput = false;
 		vm.newItemDescription = '';
 		vm.itemFunctions = {
@@ -21,13 +22,15 @@
 			clearComplete: clearComplete
 		};
 		
+		function filterItems(item) {
+			return item.list === vm.listName;
+		}
+		
 		function createNewItem() {
 			vm.newItemInput = true;	
 		}
 		
-		function add(desc) {
-			console.log($routeParams.listName);
-			
+		function add(desc) {			
 			items.add({
 				description: desc,
 				comments: '',

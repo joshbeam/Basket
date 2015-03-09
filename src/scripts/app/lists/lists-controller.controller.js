@@ -4,12 +4,12 @@
 	angular.module('Basket')
 		.controller('ListsController', ListsController);
 	
-	ListsController.$inject = ['listsPrep','lists'];
+	ListsController.$inject = ['lists'];
 	
-	function ListsController(listsPrep,lists) {
+	function ListsController(lists) {
 		var vm = this;
 		
-		vm.lists = listsPrep;	
+		vm.lists = lists.populate();
 		vm.newListName = '';
 		vm.creatingNewList = false;
 		vm.listsFunctions = {

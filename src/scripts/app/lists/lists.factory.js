@@ -20,13 +20,14 @@
 		/////////////////////
 		
 		function populate() {
-			var deferred = $q.defer();
+			//var deferred = $q.defer();
 
 			lists = localStore.get('lists') || [];
 
-			deferred.resolve(lists);
+			//deferred.resolve(lists);
 
-			return deferred.promise;			
+			//return deferred.promise;	
+			return lists;
 		}
 
 		function get(type) {

@@ -48,7 +48,7 @@
 			</ul>
 		</nav>
 		<ul shopping-list class="unstyled item-list">
-		<li ng-repeat="item in vm.items">
+		<li ng-repeat="item in vm.items | filter:{list: vm.listName}">
 			<span ng-class="{purchased: item.purchased}" ng-click="">
 				{{item.description}}
 			</span>

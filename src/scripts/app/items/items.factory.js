@@ -22,13 +22,15 @@
 		/////////////////////
 		
 		function populate() {
-			var deferred = $q.defer();
+			//var deferred = $q.defer();
 
 			list = localStore.get('shoppingList') || [];
+			console.log(list);
 
-			deferred.resolve(list);
+			//deferred.resolve(list);
 
-			return deferred.promise;			
+			//return deferred.promise;	
+			return list;
 		}
 
 		function get(type) {
