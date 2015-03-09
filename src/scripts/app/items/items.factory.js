@@ -25,7 +25,6 @@
 			//var deferred = $q.defer();
 
 			list = localStore.get('shoppingList') || [];
-			console.log(list);
 
 			//deferred.resolve(list);
 

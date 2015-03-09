@@ -48,15 +48,18 @@
 			</ul>
 		</nav>
 		<ul shopping-list class="unstyled item-list">
-		<li ng-repeat="item in vm.items | filter:{list: vm.listName}">
+		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems">
 			<span ng-class="{purchased: item.purchased}" ng-click="">
 				{{item.description}}
 			</span>
 		</li>
-		<li ng-show="vm.newItemInput">
+		
+		<div class="create-box" ng-show="vm.creatingNewItem">
 			<input type="text" ng-model="vm.newItemDescription" />
-			<button ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add it!</button>
-		</li>
+			<button class="good" ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add it!</button>
+			<button class="bad" ng-click="vm.itemFunctions.cancel()">Cancel</button>
+		</div>
+		
 		</ul>   
 		<ul class="unstyled inline-list">
 			<li>

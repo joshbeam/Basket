@@ -11,12 +11,15 @@
 		var vm = this;
 
 		vm.listName = $routeParams.listName;
-		console.log(vm.listName);
+		vm.filters = {
+			filterItems: filterItems
+		};
 		vm.items = items.populate();
-		vm.newItemInput = false;
+		vm.creatingNewItem = false;
 		vm.newItemDescription = '';
 		vm.itemFunctions = {
 			createNewItem: createNewItem,
+			cancel: cancel,
 			add: add,
 			togglePurchased: togglePurchased,
 			clearComplete: clearComplete
@@ -27,7 +30,11 @@
 		}
 		
 		function createNewItem() {
-			vm.newItemInput = true;	
+			vm.creatingNewItem = true;	
+		}
+		
+		function cancel() {
+			vm.creatingNewItem = false;	
 		}
 		
 		function add(desc) {			
