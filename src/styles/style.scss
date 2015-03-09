@@ -17,6 +17,7 @@ $super-light-gray: #ddd;
 $extra-light-gray: #eee;
 $dark-gray: #777;
 $yellow: #e6c64c;
+$gray-blue: #a59cfb;
 
 body, html {
   margin: 0;
@@ -144,4 +145,18 @@ ul,ol {
 
 .create-box {
 	margin: .5rem 0;
+}
+
+footer {
+	border-top: 1px solid $light-gray;
+	padding: 1rem;
+	margin: 1rem 0;
+	
+	a {
+		color: $gray-blue;
+	}
+	
+	small {
+		color: $light-gray;	
+	}
 }

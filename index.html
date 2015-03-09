@@ -8,6 +8,11 @@
 <body ng-app="Basket">
 	<h1>Basket</h1>
 	<div ng-view></div>
+	<footer>
+		<small>
+			Implemented by Joshua Beam (<a href="https://www.github.com/joshbeam/Basket">GitHub</a>)		
+		</small>
+	</footer>
 	
 	<!-- will run a build to concat and minify all of these into one js file -->
 	<script src="src/scripts/lib/angular/angular.min.js"></script>
@@ -36,12 +41,15 @@
 			<button class="bad" ng-click="vm.listsFunctions.cancel()">Cancel</button>		
 		</div>
 		
-		
-		<button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
+		<ul class="unstyled inline-list">
+			<li>
+			 <button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
+			</li>
+		</ul>
 	</script>
 	
 	<script type="text/ng-template" id="list.html">
-		<h2>&ldquo;{{vm.listName}}&rdquo; <small>current shopping list</small></h2>
+		<h2>&ldquo;{{vm.listName}}&rdquo; <small>current list</small></h2>
 		<nav>
 			<ul class="unstyled">
 				<li><a class="button-link" href="#/">&laquo; Back</a></li>

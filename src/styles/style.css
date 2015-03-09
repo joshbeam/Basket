@@ -75,3 +75,12 @@ ul.item-list li, ol.item-list li {
 
 .create-box {
   margin: .5rem 0; }
+
+footer {
+  border-top: 1px solid #ccc;
+  padding: 1rem;
+  margin: 1rem 0; }
+  footer a {
+    color: #a59cfb; }
+  footer small {
+    color: #ccc; }
