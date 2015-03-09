@@ -16,13 +16,17 @@
 		};
 		vm.items = items.populate();
 		vm.creatingNewItem = false;
+		vm.editingItem = false;
+		vm.itemBeingEdited = '';
 		vm.newItemDescription = '';
 		vm.itemFunctions = {
 			createNewItem: createNewItem,
 			cancel: cancel,
 			add: add,
 			togglePurchased: togglePurchased,
-			clearComplete: clearComplete
+			clearComplete: clearComplete,
+			startEditing: startEditing,
+			stopEditing: stopEditing
 		};
 		
 		function filterItems(item) {
@@ -47,14 +51,28 @@
 			vm.newItemDescription = '';
 		}
 		
+		//bug:
+		//can't use 'get' because it doesn't see the item prototype chain
 		function togglePurchased(item) {
-			var purchased = !item.get('purchased');
+			var purchased = !item.purchased;
 			
 			items.purchased(item.$$hashKey,purchased);
 		}
 		
+		//bug:
+		//you have to refresh to see the list without cleared items
 		function clearComplete() {
 			items.clearComplete();	
+		}
+		
+		function startEditing(item) {
+			vm.editingItem = true;
+			vm.itemBeingEdited = item;
+		}
+		
+		function stopEditing() {
+			vm.editingItem = false;
+			vm.itemBeingEdited = '';
 		}
 	}
 	

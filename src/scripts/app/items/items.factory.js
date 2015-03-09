@@ -56,7 +56,8 @@
 		function purchased(id,bool) {
 			angular.forEach(list,function(item) {
 				if(item.$$hashKey === id) {
-					item.set('purchased',bool);
+					// use setter method
+					item.purchased = bool;
 				}
 			});		
 				

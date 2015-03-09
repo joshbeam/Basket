@@ -57,7 +57,7 @@
 		</nav>
 		<ol shopping-list class="item-list">
 		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems">
-			<a ng-class="{purchased: item.purchased}">
+			<a ng-class="{purchased: item.purchased}" ng-click="vm.itemFunctions.startEditing(item)">
 				{{item.description}}
 			</a>
 			<br>
@@ -69,7 +69,7 @@
 			<button class="good" ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add</button>
 			<button class="bad" ng-click="vm.itemFunctions.cancel()">Cancel</button>
 		</div>
-		<ul class="unstyled inline-list" ng-show="vm.creatingNewItem === false">
+		<ul class="unstyled inline-list" ng-show="vm.creatingNewItem === false && vm.editingItem === false">
 			<li>
 				<button class="good" ng-click="vm.itemFunctions.createNewItem()">
 					Add New Item
@@ -85,6 +85,16 @@
 					Delete List
 				</button>
 			</li>
+		</ul>
+		<ul class="unstyled inline-list" ng-show="vm.editingItem === true">
+		<li>
+			<button ng-click="vm.itemFunctions.togglePurchased(vm.itemBeingEdited)">Mark as {{vm.itemBeingEdited.purchased === false ? 'purchased' : 'not purchased'}}</button>
+		</li>
+		<li>
+			<button ng-click="vm.itemFunctions.stopEditing()">
+				Done
+			</button>
+		</li>
 		</ul>
 	</script>	
 </body>
