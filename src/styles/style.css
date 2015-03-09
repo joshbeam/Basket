@@ -37,6 +37,12 @@ button, a.button-link, input[type="button"], input[type="text"] {
     border-color: #fff; }
     button.good:hover, a.good.button-link:hover, input.good[type="button"]:hover, input.good[type="text"]:hover {
       background: #409b4a; }
+  button.warning, a.warning.button-link, input.warning[type="button"], input.warning[type="text"] {
+    background: #e6c64c;
+    color: #fff;
+    border-color: #fff; }
+    button.warning:hover, a.warning.button-link:hover, input.warning[type="button"]:hover, input.warning[type="text"]:hover {
+      background: #e3bf36; }
 
 a {
   text-decoration: none;
@@ -52,19 +58,19 @@ input[type="text"] {
   color: #ccc;
   text-decoration: line-through; }
 
-ul.unstyled {
+ul.unstyled, ol.unstyled {
   list-style-type: none;
   margin: 0;
   padding: .5rem 0; }
-ul.inline-list li {
+ul.inline-list li, ol.inline-list li {
   display: inline-block; }
-ul li {
+ul li, ol li {
   position: relative;
   padding: .5rem; }
-ul.item-list li {
+ul.item-list li, ol.item-list li {
   border-bottom: 1px solid #ddd;
   cursor: pointer; }
-  ul.item-list li:hover {
+  ul.item-list li:hover, ol.item-list li:hover {
     background: #eee; }
 
 .create-box {

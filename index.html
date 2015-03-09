@@ -32,12 +32,12 @@
 		</ul>
 		<div class="create-box" ng-show="vm.creatingNewList">
 			<input type="text" ng-model="vm.newListName" />
-			<button class="good" ng-click="vm.listsFunctions.create()">Create</button>
+			<button class="good" ng-click="vm.listsFunctions.create()">+</button>
 			<button class="bad" ng-click="vm.listsFunctions.cancel()">Cancel</button>		
 		</div>
 		
 		
-		<button ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
+		<button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
 	</script>
 	
 	<script type="text/ng-template" id="list.html">
@@ -47,31 +47,36 @@
 				<li><a class="button-link" href="#/">&laquo; Back</a></li>
 			</ul>
 		</nav>
-		<ul shopping-list class="unstyled item-list">
+		<ol shopping-list class="item-list">
 		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems">
-			<span ng-class="{purchased: item.purchased}" ng-click="">
+			<a ng-class="{purchased: item.purchased}">
 				{{item.description}}
-			</span>
+			</a>
+			<br>
+			<span>{{item.comments}}</span>
 		</li>
-		
+		</ol>   
 		<div class="create-box" ng-show="vm.creatingNewItem">
 			<input type="text" ng-model="vm.newItemDescription" />
-			<button class="good" ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add it!</button>
+			<button class="good" ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add</button>
 			<button class="bad" ng-click="vm.itemFunctions.cancel()">Cancel</button>
 		</div>
-		
-		</ul>   
-		<ul class="unstyled inline-list">
+		<ul class="unstyled inline-list" ng-show="vm.creatingNewItem === false">
 			<li>
-				<button ng-click="vm.itemFunctions.createNewItem()">
+				<button class="good" ng-click="vm.itemFunctions.createNewItem()">
 					Add New Item
 				</button>
 			</li>
 			<li>
-			<button ng-click="vm.itemFunctions.clearComplete()">
-				Clear Completed Items
-			</button>
-		</li>
+				<button ng-click="vm.itemFunctions.clearComplete()">
+					Clear Purchased
+				</button>
+			</li>
+			<li>
+				<button class="bad" ng-click="">
+					Delete List
+				</button>
+			</li>
 		</ul>
 	</script>	
 </body>

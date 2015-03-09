@@ -16,6 +16,7 @@ $light-gray: #ccc;
 $super-light-gray: #ddd;
 $extra-light-gray: #eee;
 $dark-gray: #777;
+$yellow: #e6c64c;
 
 body, html {
   margin: 0;
@@ -74,6 +75,17 @@ button {
 			background: darken($green,5%);
 		}
 	}
+	
+	&.warning {
+		background: $yellow;
+		color: $white;
+		border-color: $white;
+
+		//can i make this a function?
+		&:hover {
+			background: darken($yellow,5%);
+		}
+	}
 }
 
 a {
@@ -104,7 +116,7 @@ input[type="text"] {
   text-decoration: line-through;
 }
 
-ul {
+ul,ol {
   &.unstyled {
 	list-style-type: none;
 	margin: 0;
