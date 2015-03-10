@@ -162,6 +162,12 @@ footer {
   text-decoration: line-through;
 }
 
+.item-comments {
+	font-size: $font-size*.75;
+	color: $light-gray;
+	margin: .5rem 0 0 0;
+}
+
 //components
 .panel {
 	color: $light-gray;

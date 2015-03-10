@@ -61,8 +61,29 @@
 			</ul>
 		</nav>
 		<ol shopping-list class="item-list">
-		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.itemBeingEdited}">
-			<a class="block-link" ng-class="{purchased: item.get('purchased')}" ng-click="vm.itemFunctions.startEditing(item)">{{item.description}}</a>
+		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.itemBeingEdited}" ng-click="vm.itemFunctions.startEditing(item)">
+		
+			<a class="block-link" ng-class="{purchased: item.get('purchased')}" ng-show="vm.editingDescription === false">
+				{{item.get('description')}}
+			</a>
+			
+			<div ng-show="vm.editingDescription === true && item === vm.itemBeingEdited">
+				<input type="text" ng-model="vm.editedDescription" />
+				<button class="good" ng-click="vm.itemFunctions.edit()">Save</button>
+				<button class="bad" ng-click="vm.itemFunctions.stopEditingDescription()">Cancel</button>
+			</div>
+			
+			<div class="item-comments" ng-show="item.get('comments').trim() !== '' && vm.addingComments === false">
+				{{item.get('comments')}}
+			</div>
+			
+			<div ng-show="vm.addingComments === true && item === vm.itemBeingEdited">
+				<textarea ng-model="vm.commentsForItemBeingEdited"></textarea>
+				<br>
+				<button class="good" ng-click="vm.itemFunctions.comment()">Add Comments</button>
+				<button class="warning" ng-click="vm.itemFunctions.removeComments()" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove All Comments</button>
+				<button class="bad" ng-click="vm.itemFunctions.stopAddingComments()">Cancel</button>
+			</div>
 		</li>
 		</ol>   
 		<div class="create-box" ng-show="vm.creatingNewItem === true && vm.editingItem === false">
@@ -82,7 +103,7 @@
 				</button>
 			</li>
 			<li>
-				<button class="bad" ng-click="">
+				<button class="bad" ng-click="vm.itemFunctions.removeList()">
 					Delete List
 				</button>
 			</li>
@@ -94,7 +115,13 @@
 			</button>
 		</li>
 		<li>
-			<button ng-click="vm.itemFunctions.togglePurchased(vm.itemBeingEdited)">Mark as {{vm.itemBeingEdited.purchased === false ? 'purchased' : 'not purchased'}}</button>
+			<button ng-click="vm.itemFunctions.togglePurchased()">Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}</button>
+		</li>
+		<li>
+			<button ng-click="vm.itemFunctions.startEditingDescription()">Edit Description</button>
+		</li>
+		<li>
+			<button ng-click="vm.itemFunctions.startAddingComments()">{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments</button>
 		</li>
 		</ul>
 	</script>	

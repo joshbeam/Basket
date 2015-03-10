@@ -1,21 +1,26 @@
 (function() {
 	'use strict';
 	
-	items.$inject = ['Item','localStore','$q'];
+	items.$inject = ['Item','localStore','$q','$rootScope'];
 	
 	angular.module('Basket')
 	.factory('items',items);
 	
-	function items(Item,localStore,$q) {
+	function items(Item,localStore,$q,$rootScope) {
 		var list = [],
 			exports = {
 				populate: populate,
 				get: get,
 				add: add,
-				purchased: purchased,
 				clearPurchased: clearPurchased,
 				update: update
 			};
+		
+		$rootScope.$on('itemSet',exec);
+		
+		function exec() {
+			return exports.update();	
+		}
 		
 		return exports;
 
@@ -51,17 +56,6 @@
 
 			this.update();			
 		}
-		
-
-		function purchased(id,bool) {
-			angular.forEach(list,function(item) {
-				if(item.$$hashKey === id) {
-					item.set('purchased',bool);
-				}
-			});		
-				
-			this.update();
-		}
 
 		function clearPurchased() {			
 			/* 	must use splice to live update the controller
@@ -71,18 +65,18 @@
 						return item.get('purchased') === false;
 					});				
 			*/
-			angular.forEach(list,function(item) {
-				var index;
-				
-				if(item.get('purchased') === true) {
-					index = list.indexOf(item);
-					
-					if(index > -1) {
-						list.splice(index, 1);
-					}
-				}				
-				
-			});
+			
+			//solution: http://stackoverflow.com/a/16217435/2714730
+			//angular.forEach doesn't work because indices change...
+			//therefore, we loop backwards
+			
+			var i = list.length;
+			
+			while(i--) {
+				if(list[i].get('purchased') === true) {
+					list.splice(i,1);	
+				}
+			}
 
 			this.update();			
 		}

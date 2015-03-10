@@ -1,10 +1,12 @@
 (function() {
 	'use strict';
 	
+	Item.$inject = ['$rootScope'];
+	
 	angular.module('Basket')
 		.factory('Item',Item);
 	
-	function Item() {
+	function Item($rootScope) {
 		Service.prototype = {
 			get: get,
 			set: set
@@ -31,6 +33,8 @@
 			if(prop in this) {
 				this[prop] = val;
 			}
+			
+			$rootScope.$broadcast('itemSet');
 
 			return this;
 		}		

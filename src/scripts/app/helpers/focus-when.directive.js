@@ -22,7 +22,6 @@
 		function link(scope, element, attrs) {
 			scope.$watch(attrs.focusWhen, watchFn, true);		
 
-			// !(sum of bools is < attrs.focusWhen.length);
 			function watchFn(newVal) {
 				var bool;
 				
