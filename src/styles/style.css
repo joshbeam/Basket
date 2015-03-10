@@ -54,10 +54,6 @@ a {
 input[type="text"] {
   cursor: text; }
 
-.purchased {
-  color: #ccc;
-  text-decoration: line-through; }
-
 ul.unstyled, ol.unstyled {
   list-style-type: none;
   margin: 0;
@@ -73,9 +69,6 @@ ul.item-list li, ol.item-list li {
   ul.item-list li:hover, ol.item-list li:hover {
     background: #eee; }
 
-.create-box {
-  margin: .5rem 0; }
-
 footer {
   border-top: 1px solid #ccc;
   padding: 1rem;
@@ -84,3 +77,19 @@ footer {
     color: #a59cfb; }
   footer small {
     color: #ccc; }
+
+.selected {
+  background: #eee; }
+
+.purchased {
+  color: #ccc;
+  text-decoration: line-through; }
+
+.panel {
+  color: #ccc;
+  background: #eee;
+  border-radius: 0.25rem;
+  padding: 2rem; }
+
+.create-box {
+  margin: .5rem 0; }

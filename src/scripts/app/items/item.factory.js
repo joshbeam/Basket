@@ -9,7 +9,7 @@
 			get: get,
 			set: set
 		};
-
+		
 		function Service(props) {
 			this.description = props.description;
 			this.comments = props.comments;

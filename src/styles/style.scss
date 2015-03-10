@@ -112,11 +112,6 @@ input[type="text"] {
   cursor: text;
 }
 
-.purchased {
-  color: $light-gray;
-  text-decoration: line-through;
-}
-
 ul,ol {
   &.unstyled {
 	list-style-type: none;
@@ -143,10 +138,6 @@ ul,ol {
 	}	
 }
 
-.create-box {
-	margin: .5rem 0;
-}
-
 footer {
 	border-top: 1px solid $light-gray;
 	padding: 1rem;
@@ -159,4 +150,26 @@ footer {
 	small {
 		color: $light-gray;	
 	}
+}
+
+//properties of items
+.selected {
+	background: $extra-light-gray;
+}
+
+.purchased {
+  color: $light-gray;
+  text-decoration: line-through;
+}
+
+//components
+.panel {
+	color: $light-gray;
+	background: $extra-light-gray;
+	@include border-radius(.25rem);
+	padding: 2rem;
+}
+
+.create-box {
+	margin: .5rem 0;
 }

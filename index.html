@@ -23,6 +23,8 @@
 	<script src="src/scripts/app/items/item.factory.js"></script>
 	<script src="src/scripts/app/items/items.factory.js"></script>
 	<script src="src/scripts/app/helpers/local-store.factory.js"></script>
+	<script src="src/scripts/app/helpers/focus-when.directive.js"></script>
+	<script src="src/scripts/app/helpers/key-down.directive.js"></script>
 	<script src="src/scripts/app/lists/lists.factory.js"></script>
 	<script src="src/scripts/app/lists/list.factory.js"></script>
 	<script src="src/scripts/app/lists/list-controller.controller.js"></script>
@@ -35,8 +37,11 @@
 				<a class="block-link" href="#list/{{list.name}}">{{list.name}}</a>
 			</li>
 		</ul>
+		<div class="panel" ng-show="vm.lists.length === 0">
+			Looks like you don't have any shopping lists! Why don't you create one?
+		</div>
 		<div class="create-box" ng-show="vm.creatingNewList">
-			<input type="text" ng-model="vm.newListName" />
+			<input type="text" ng-model="vm.newListName" key-down="vm.listsFunctions.create()" focus-when="vm.creatingNewList" />
 			<button class="good" ng-click="vm.listsFunctions.create()">+</button>
 			<button class="bad" ng-click="vm.listsFunctions.cancel()">Cancel</button>		
 		</div>
@@ -56,16 +61,12 @@
 			</ul>
 		</nav>
 		<ol shopping-list class="item-list">
-		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems">
-			<a ng-class="{purchased: item.purchased}" ng-click="vm.itemFunctions.startEditing(item)">
-				{{item.description}}
-			</a>
-			<br>
-			<span>{{item.comments}}</span>
+		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.itemBeingEdited}">
+			<a class="block-link" ng-class="{purchased: item.get('purchased')}" ng-click="vm.itemFunctions.startEditing(item)">{{item.description}}</a>
 		</li>
 		</ol>   
-		<div class="create-box" ng-show="vm.creatingNewItem">
-			<input type="text" ng-model="vm.newItemDescription" />
+		<div class="create-box" ng-show="vm.creatingNewItem === true && vm.editingItem === false">
+			<input type="text" ng-model="vm.newItemDescription" key-down="vm.itemFunctions.add(vm.newItemDescription)" focus-when="[vm.creatingNewItem === true, vm.editingItem === false]" />
 			<button class="good" ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add</button>
 			<button class="bad" ng-click="vm.itemFunctions.cancel()">Cancel</button>
 		</div>
@@ -76,7 +77,7 @@
 				</button>
 			</li>
 			<li>
-				<button ng-click="vm.itemFunctions.clearComplete()">
+				<button ng-click="vm.itemFunctions.clearPurchased()">
 					Clear Purchased
 				</button>
 			</li>
@@ -88,12 +89,12 @@
 		</ul>
 		<ul class="unstyled inline-list" ng-show="vm.editingItem === true">
 		<li>
-			<button ng-click="vm.itemFunctions.togglePurchased(vm.itemBeingEdited)">Mark as {{vm.itemBeingEdited.purchased === false ? 'purchased' : 'not purchased'}}</button>
+			<button ng-click="vm.itemFunctions.stopEditing()">
+				&laquo;
+			</button>
 		</li>
 		<li>
-			<button ng-click="vm.itemFunctions.stopEditing()">
-				Done
-			</button>
+			<button ng-click="vm.itemFunctions.togglePurchased(vm.itemBeingEdited)">Mark as {{vm.itemBeingEdited.purchased === false ? 'purchased' : 'not purchased'}}</button>
 		</li>
 		</ul>
 	</script>	

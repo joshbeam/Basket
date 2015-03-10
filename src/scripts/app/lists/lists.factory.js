@@ -22,7 +22,9 @@
 		function populate() {
 			//var deferred = $q.defer();
 
-			lists = localStore.get('lists') || [];
+			//lists = localStore.get('lists') || [];
+			
+			lists = localStore.recreate(localStore.get('lists'),List.prototype) || [];
 
 			//deferred.resolve(lists);
 

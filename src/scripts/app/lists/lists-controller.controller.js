@@ -22,6 +22,8 @@
 			vm.creatingNewList = true;	
 		}
 		
+		//bug:
+		//need to make sure there is something in the text field
 		function create() {
 			lists.add({
 				name: vm.newListName

@@ -24,7 +24,7 @@
 			cancel: cancel,
 			add: add,
 			togglePurchased: togglePurchased,
-			clearComplete: clearComplete,
+			clearPurchased: clearPurchased,
 			startEditing: startEditing,
 			stopEditing: stopEditing
 		};
@@ -51,18 +51,16 @@
 			vm.newItemDescription = '';
 		}
 		
-		//bug:
-		//can't use 'get' because it doesn't see the item prototype chain
 		function togglePurchased(item) {
-			var purchased = !item.purchased;
+			var purchased = !item.get('purchased');
 			
-			items.purchased(item.$$hashKey,purchased);
+			items.purchased(item.get('$$hashKey'),purchased);
 		}
 		
 		//bug:
 		//you have to refresh to see the list without cleared items
-		function clearComplete() {
-			items.clearComplete();	
+		function clearPurchased() {
+			items.clearPurchased();	
 		}
 		
 		function startEditing(item) {

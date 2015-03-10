@@ -13,7 +13,7 @@
 				get: get,
 				add: add,
 				purchased: purchased,
-				clearComplete: clearComplete,
+				clearPurchased: clearPurchased,
 				update: update
 			};
 		
@@ -24,8 +24,8 @@
 		function populate() {
 			//var deferred = $q.defer();
 
-			list = localStore.get('shoppingList') || [];
-
+			list = localStore.recreate(localStore.get('shoppingList'),Item.prototype) || [];
+			
 			//deferred.resolve(list);
 
 			//return deferred.promise;	
@@ -56,17 +56,32 @@
 		function purchased(id,bool) {
 			angular.forEach(list,function(item) {
 				if(item.$$hashKey === id) {
-					// use setter method
-					item.purchased = bool;
+					item.set('purchased',bool);
 				}
 			});		
 				
 			this.update();
 		}
 
-		function clearComplete() {
-			list = list.filter(function(item) {
-				return item.purchased === false;
+		function clearPurchased() {			
+			/* 	must use splice to live update the controller
+			
+				this won't work:
+					list = list.filter(function(item) {
+						return item.get('purchased') === false;
+					});				
+			*/
+			angular.forEach(list,function(item) {
+				var index;
+				
+				if(item.get('purchased') === true) {
+					index = list.indexOf(item);
+					
+					if(index > -1) {
+						list.splice(index, 1);
+					}
+				}				
+				
 			});
 
 			this.update();			
