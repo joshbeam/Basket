@@ -1,0 +1,95 @@
+body, html {
+  margin: 0;
+  padding: 1em;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 16px; }
+
+h1 {
+  text-shadow: 0px 1px #ddd; }
+
+h2 {
+  color: #777; }
+  h2 small {
+    color: #ddd;
+    font-style: italic; }
+
+h3 {
+  color: #ccc; }
+
+button, a.button-link, input[type="button"], input[type="text"] {
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #777;
+  padding: .5rem;
+  border-radius: 5px; }
+  button:hover, a.button-link:hover, input[type="button"]:hover, input[type="text"]:hover {
+    background: #f2f2f2; }
+  button.bad, a.bad.button-link, input.bad[type="button"], input.bad[type="text"] {
+    background: #e85858;
+    color: #fff;
+    border-color: #fff; }
+    button.bad:hover, a.bad.button-link:hover, input.bad[type="button"]:hover, input.bad[type="text"]:hover {
+      background: #e54242; }
+  button.good, a.good.button-link, input.good[type="button"], input.good[type="text"] {
+    background: #47ad53;
+    color: #fff;
+    border-color: #fff; }
+    button.good:hover, a.good.button-link:hover, input.good[type="button"]:hover, input.good[type="text"]:hover {
+      background: #409b4a; }
+  button.warning, a.warning.button-link, input.warning[type="button"], input.warning[type="text"] {
+    background: #e6c64c;
+    color: #fff;
+    border-color: #fff; }
+    button.warning:hover, a.warning.button-link:hover, input.warning[type="button"]:hover, input.warning[type="text"]:hover {
+      background: #e3bf36; }
+
+a {
+  text-decoration: none;
+  color: #777; }
+  a.block-link {
+    width: 100%;
+    display: block; }
+
+input[type="text"] {
+  cursor: text; }
+
+ul.unstyled, ol.unstyled {
+  list-style-type: none;
+  margin: 0;
+  padding: .5rem 0; }
+ul.inline-list li, ol.inline-list li {
+  display: inline-block; }
+ul li, ol li {
+  position: relative;
+  padding: .5rem; }
+ul.item-list li, ol.item-list li {
+  border-bottom: 1px solid #ddd;
+  cursor: pointer; }
+  ul.item-list li:hover, ol.item-list li:hover {
+    background: #eee; }
+
+footer {
+  border-top: 1px solid #ccc;
+  padding: 1rem;
+  margin: 1rem 0; }
+  footer a {
+    color: #a59cfb; }
+  footer small {
+    color: #ccc; }
+
+.selected {
+  background: #eee; }
+
+.purchased {
+  color: #ccc;
+  text-decoration: line-through; }
+
+.panel {
+  color: #ccc;
+  background: #eee;
+  border-radius: 0.25rem;
+  padding: 2rem; }
+
+.create-box {
+  margin: .5rem 0; }

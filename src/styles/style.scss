@@ -1,0 +1,175 @@
+// make REM mixin
+
+@mixin border-radius($radius) {
+  border-radius: $radius;
+}
+
+$font-stack: 'Helvetica', sans-serif;
+$font-size: 16px;
+
+$bg: #fff;
+
+$white: #fff;
+$green: #47ad53;
+$dark-red: #e85858;
+$light-gray: #ccc;
+$super-light-gray: #ddd;
+$extra-light-gray: #eee;
+$dark-gray: #777;
+$yellow: #e6c64c;
+$gray-blue: #a59cfb;
+
+body, html {
+  margin: 0;
+  padding: 1em;
+  font-family: $font-stack;
+  font-size: $font-size;
+}
+
+h1 {
+  text-shadow: 0px 1px $super-light-gray;
+}
+
+h2 {
+  color: $dark-gray;
+	
+	small {
+		color: $super-light-gray;
+		font-style: italic;
+	}
+}
+
+h3 {
+  color: $light-gray;
+}
+
+button {
+  cursor: pointer;
+  background: $bg;
+  border: 1px solid $light-gray;
+  color: $dark-gray;
+  padding: .5rem;
+  @include border-radius(5px);
+  
+  &:hover {
+	background: darken($bg,5%);
+  }
+  
+  &.bad {
+	background: $dark-red;
+	color: $white;
+	border-color: $white;
+	
+	//can i make this a function?
+	&:hover {
+	  background: darken($dark-red,5%);
+	}
+  }
+	
+	&.good {
+		background: $green;
+		color: $white;
+		border-color: $white;
+
+		//can i make this a function?
+		&:hover {
+			background: darken($green,5%);
+		}
+	}
+	
+	&.warning {
+		background: $yellow;
+		color: $white;
+		border-color: $white;
+
+		//can i make this a function?
+		&:hover {
+			background: darken($yellow,5%);
+		}
+	}
+}
+
+a {
+	text-decoration: none;
+	color: $dark-gray;
+	
+	&.block-link {
+		width: 100%;
+		display: block;
+	}
+	
+	&.button-link {
+		@extend button;
+	}
+}
+
+input[type="button"] {
+  @extend button;
+}
+
+input[type="text"] {
+  @extend button;
+  cursor: text;
+}
+
+ul,ol {
+  &.unstyled {
+	list-style-type: none;
+	margin: 0;
+	padding: .5rem 0;
+  }
+	
+	&.inline-list li {
+		display: inline-block;
+	}
+  
+  li {
+	position: relative;
+	padding: .5rem;
+  }
+	
+	&.item-list li {
+		border-bottom: 1px solid $super-light-gray;
+		cursor: pointer;
+		
+		&:hover {
+			background: $extra-light-gray;
+		}
+	}	
+}
+
+footer {
+	border-top: 1px solid $light-gray;
+	padding: 1rem;
+	margin: 1rem 0;
+	
+	a {
+		color: $gray-blue;
+	}
+	
+	small {
+		color: $light-gray;	
+	}
+}
+
+//properties of items
+.selected {
+	background: $extra-light-gray;
+}
+
+.purchased {
+  color: $light-gray;
+  text-decoration: line-through;
+}
+
+//components
+.panel {
+	color: $light-gray;
+	background: $extra-light-gray;
+	@include border-radius(.25rem);
+	padding: 2rem;
+}
+
+.create-box {
+	margin: .5rem 0;
+}
