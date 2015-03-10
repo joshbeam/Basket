@@ -55,7 +55,7 @@
 
 		function purchased(id,bool) {
 			angular.forEach(list,function(item) {
-				if(item.$$hashKey === id) {
+				if(item.get('$$hashKey') === id) {
 					item.set('purchased',bool);
 				}
 			});		
@@ -71,18 +71,18 @@
 						return item.get('purchased') === false;
 					});				
 			*/
-			angular.forEach(list,function(item) {
-				var index;
-				
-				if(item.get('purchased') === true) {
-					index = list.indexOf(item);
-					
-					if(index > -1) {
-						list.splice(index, 1);
-					}
-				}				
-				
-			});
+			
+			//solution: http://stackoverflow.com/a/16217435/2714730
+			//angular.forEach doesn't work because indices change...
+			//therefore, we loop backwards
+			
+			var i = list.length;
+			
+			while(i--) {
+				if(list[i].get('purchased') === true) {
+					list.splice(i,1);	
+				}
+			}
 
 			this.update();			
 		}
