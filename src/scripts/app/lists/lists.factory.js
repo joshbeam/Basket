@@ -12,6 +12,7 @@
 				populate: populate,
 				get: get,
 				add: add,
+				remove: remove,
 				update: update
 			};
 		
@@ -62,6 +63,16 @@
 			} else {
 				alert('Choose a unique name');
 			}
+		}
+		
+		function remove(listName) {
+			angular.forEach(lists,function(list) {
+				if(list.name === listName) {
+					lists.splice(lists.indexOf(list),1);	
+				}
+			});
+			
+			this.update();
 		}
 							
 		function update() {

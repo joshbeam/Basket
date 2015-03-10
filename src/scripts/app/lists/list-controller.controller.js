@@ -5,9 +5,9 @@
 		.module('Basket')
 		.controller('ListController',ListController);
 	
-	ListController.$inject = ['items','$routeParams'];
+	ListController.$inject = ['items','lists','$routeParams','$location'];
 	
-	function ListController(items,$routeParams) {
+	function ListController(items,lists,$routeParams,$location) {
 		var vm = this;
 
 		vm.listName = $routeParams.listName;
@@ -15,22 +15,53 @@
 			filterItems: filterItems
 		};
 		vm.items = items.populate();
+		//maybe organize this into 'states' and 'functions'
 		vm.creatingNewItem = false;
 		vm.editingItem = false;
+		vm.commentsForItemBeingEdited = '';
+		vm.addingComments = false;
+		vm.editingDescription = false;
+		vm.editedDescription = '';
 		vm.itemBeingEdited = '';
 		vm.newItemDescription = '';
 		vm.itemFunctions = {
 			createNewItem: createNewItem,
-			cancel: cancel,
-			add: add,
-			togglePurchased: togglePurchased,
-			clearPurchased: clearPurchased,
 			startEditing: startEditing,
-			stopEditing: stopEditing
+			stopEditing: stopEditing,
+			add: add,
+			cancel: cancel,
+			togglePurchased: togglePurchased,
+			startAddingComments: startAddingComments,
+			stopAddingComments: stopAddingComments,
+			comment: comment,
+			removeComments: removeComments,
+			startEditingDescription: startEditingDescription,
+			stopEditingDescription: stopEditingDescription,
+			edit: edit,
+			//maybe put these in "overall list" object
+			clearPurchased: clearPurchased,
+			removeList: removeList,
 		};
 		
 		function filterItems(item) {
 			return item.list === vm.listName;
+		}
+		
+		function startEditingDescription() {
+			vm.editedDescription = vm.itemBeingEdited.get('description');
+			vm.editingDescription = true;
+		}
+		
+		function stopEditingDescription() {
+			vm.editingDescription = false;
+		}
+		
+		function edit() {
+			var item = vm.itemBeingEdited;
+			
+			item.set('description',vm.editedDescription);
+			
+			return stopEditingDescription();
 		}
 		
 		function createNewItem() {
@@ -41,7 +72,11 @@
 			vm.creatingNewItem = false;	
 		}
 		
-		function add(desc) {			
+		function add(desc) {
+			if(desc.trim() === '') {
+				return; 	
+			}
+			
 			items.add({
 				description: desc,
 				comments: '',
@@ -51,16 +86,57 @@
 			vm.newItemDescription = '';
 		}
 		
-		function togglePurchased(item) {
-			var purchased = !item.get('purchased');
+		function togglePurchased() {
+			var item = vm.itemBeingEdited,
+				purchased = item.get('purchased');
 			
-			items.purchased(item.get('$$hashKey'),purchased);
+			item.set('purchased',!purchased);
+			//items.purchased(item.get('$$hashKey'),purchased);
 		}
 		
-		//bug:
-		//you have to refresh to see the list without cleared items
+		function startAddingComments() {
+			vm.addingComments = true;
+			if(vm.itemBeingEdited.get('comments').trim() === '') {
+				vm.commentsForItemBeingEdited = '';	
+			} else {
+				vm.commentsForItemBeingEdited = vm.itemBeingEdited.get('comments');	
+			}
+		}
+		
+		function stopAddingComments() {
+			vm.addingComments = false;
+			
+			vm.commentsForItemBeingEdited = '';
+		}
+		
+		function comment() {
+			var item = vm.itemBeingEdited;
+			
+			item.set('comments',vm.commentsForItemBeingEdited);
+
+			return stopAddingComments();
+		}
+		
+		function removeComments() {
+			var item = vm.itemBeingEdited;
+			
+			item.set('comments','');
+
+			return stopAddingComments();	
+		}
+		
 		function clearPurchased() {
 			items.clearPurchased();	
+		}
+		
+		function removeList() {
+			if(confirm("Do you want to delete this entire shopping list?")) {
+				//remove the list and save the array back to localStorage
+				lists.remove(vm.listName);
+				$location.path('/');
+			} else {
+				return;	
+			}
 		}
 		
 		function startEditing(item) {

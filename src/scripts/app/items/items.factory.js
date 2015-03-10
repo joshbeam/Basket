@@ -1,21 +1,26 @@
 (function() {
 	'use strict';
 	
-	items.$inject = ['Item','localStore','$q'];
+	items.$inject = ['Item','localStore','$q','$rootScope'];
 	
 	angular.module('Basket')
 	.factory('items',items);
 	
-	function items(Item,localStore,$q) {
+	function items(Item,localStore,$q,$rootScope) {
 		var list = [],
 			exports = {
 				populate: populate,
 				get: get,
 				add: add,
-				purchased: purchased,
 				clearPurchased: clearPurchased,
 				update: update
 			};
+		
+		$rootScope.$on('itemSet',exec);
+		
+		function exec() {
+			return exports.update();	
+		}
 		
 		return exports;
 
@@ -50,17 +55,6 @@
 			list.push(new Item(props));
 
 			this.update();			
-		}
-		
-
-		function purchased(id,bool) {
-			angular.forEach(list,function(item) {
-				if(item.get('$$hashKey') === id) {
-					item.set('purchased',bool);
-				}
-			});		
-				
-			this.update();
 		}
 
 		function clearPurchased() {			

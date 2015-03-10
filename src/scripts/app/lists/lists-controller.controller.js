@@ -22,15 +22,17 @@
 			vm.creatingNewList = true;	
 		}
 		
-		//bug:
-		//need to make sure there is something in the text field
 		function create() {
+			if(vm.newListName.trim() === '') {
+				return; 	
+			}
+			
 			lists.add({
 				name: vm.newListName
 			});
 			
 			vm.newListName = '';
-		}		
+		}
 		
 		function cancel() {
 			vm.creatingNewList = false;	

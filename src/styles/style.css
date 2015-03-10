@@ -85,6 +85,11 @@ footer {
   color: #ccc;
   text-decoration: line-through; }
 
+.item-comments {
+  font-size: 12px;
+  color: #ccc;
+  margin: .5rem 0 0 0; }
+
 .panel {
   color: #ccc;
   background: #eee;
