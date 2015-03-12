@@ -9,6 +9,7 @@ TODO: add sharing functionality
 <head>
 	<link rel="stylesheet" href="src/styles/style.css" />
   	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<title>Basket</title>
 </head>
 <body ng-app="Basket">
@@ -100,12 +101,17 @@ TODO: add sharing functionality
 		<ul class="unstyled inline-list" ng-show="vm.creatingNewItem === false && vm.editingItem === false">
 			<li>
 				<button class="good" ng-click="vm.itemFunctions.createNewItem()">
-					Add New Item
+					Add Item
 				</button>
 			</li>
 			<li>
 				<button ng-click="vm.itemFunctions.clearPurchased()">
 					Clear Purchased
+				</button>
+			</li>
+			<li>
+				<button ng-click="vm.itemFunctions.startAddingPerson()">
+					Add Person
 				</button>
 			</li>
 			<li>
@@ -128,6 +134,9 @@ TODO: add sharing functionality
 		</li>
 		<li>
 			<button ng-click="vm.itemFunctions.startAddingComments()">{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments</button>
+		</li>
+		<li>
+			<button ng-click="vm.itemFunctions.startAddingComments()">Assign To...</button>
 		</li>
 		</ul>
 	</script>	
