@@ -50,6 +50,8 @@
 		function startEditingDescription() {
 			vm.editedDescription = vm.itemBeingEdited.get('description');
 			vm.editingDescription = true;
+			
+			stopAddingComments();
 		}
 		
 		function stopEditingDescription() {
@@ -101,6 +103,8 @@
 			} else {
 				vm.commentsForItemBeingEdited = vm.itemBeingEdited.get('comments');	
 			}
+			
+			stopEditingDescription();
 		}
 		
 		function stopAddingComments() {
