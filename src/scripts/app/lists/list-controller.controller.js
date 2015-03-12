@@ -1,3 +1,7 @@
+/*
+BUG: when you delete a list, its items are still in localStorage
+*/
+
 (function() {
 	'use strict';
 	
