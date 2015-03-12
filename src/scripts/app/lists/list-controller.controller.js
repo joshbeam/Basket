@@ -82,7 +82,8 @@
 			items.add({
 				description: desc,
 				comments: '',
-				list: vm.listName
+				list: vm.listName,
+				person: ''
 			});
 			
 			vm.newItemDescription = '';
