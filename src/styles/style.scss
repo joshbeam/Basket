@@ -128,6 +128,13 @@ ul,ol {
 	padding: .5rem;
   }
 	
+	&.item-list textarea {
+		width: 50%;
+		height: 5rem;
+		margin: .5rem 0;
+		color: $dark-gray;
+	}
+	
 	&.item-list li {
 		border-bottom: 1px solid $super-light-gray;
 		cursor: pointer;
@@ -166,6 +173,12 @@ footer {
 	font-size: $font-size*.75;
 	color: $light-gray;
 	margin: .5rem 0 0 0;
+}
+
+.item-edit-field {
+	margin: .5rem 0;
+	padding: .5rem 0;
+	border-top: 1px dashed $light-gray;
 }
 
 //components

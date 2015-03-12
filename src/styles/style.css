@@ -63,6 +63,11 @@ ul.inline-list li, ol.inline-list li {
 ul li, ol li {
   position: relative;
   padding: .5rem; }
+ul.item-list textarea, ol.item-list textarea {
+  width: 50%;
+  height: 5rem;
+  margin: .5rem 0;
+  color: #777; }
 ul.item-list li, ol.item-list li {
   border-bottom: 1px solid #ddd;
   cursor: pointer; }
@@ -89,6 +94,11 @@ footer {
   font-size: 12px;
   color: #ccc;
   margin: .5rem 0 0 0; }
+
+.item-edit-field {
+  margin: .5rem 0;
+  padding: .5rem 0;
+  border-top: 1px dashed #ccc; }
 
 .panel {
   color: #ccc;

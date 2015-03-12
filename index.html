@@ -69,25 +69,25 @@ TODO: add sharing functionality
 		<ol shopping-list class="item-list">
 		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.itemBeingEdited}" ng-click="vm.itemFunctions.startEditing(item)">
 		
-			<a class="block-link" ng-class="{purchased: item.get('purchased')}" ng-show="vm.editingDescription === false">
+			<a class="block-link" ng-class="{purchased: item.get('purchased')}">
 				{{item.get('description')}}
 			</a>
 			
-			<div ng-show="vm.editingDescription === true && item === vm.itemBeingEdited">
+			<div class="item-edit-field" ng-show="vm.editingDescription === true && item === vm.itemBeingEdited && vm.addingComments === false">
 				<input type="text" ng-model="vm.editedDescription" />
 				<button class="good" ng-click="vm.itemFunctions.edit()">Save</button>
 				<button class="bad" ng-click="vm.itemFunctions.stopEditingDescription()">Cancel</button>
 			</div>
 			
-			<div class="item-comments" ng-show="item.get('comments').trim() !== '' && vm.addingComments === false">
+			<div class="item-comments" ng-show="item.get('comments').trim() !== ''">
 				{{item.get('comments')}}
 			</div>
 			
-			<div ng-show="vm.addingComments === true && item === vm.itemBeingEdited">
+			<div class="item-edit-field" ng-show="vm.addingComments === true && item === vm.itemBeingEdited && vm.editingDescription === false">
 				<textarea ng-model="vm.commentsForItemBeingEdited"></textarea>
 				<br>
-				<button class="good" ng-click="vm.itemFunctions.comment()">Add Comments</button>
-				<button class="warning" ng-click="vm.itemFunctions.removeComments()" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove All Comments</button>
+				<button class="good" ng-click="vm.itemFunctions.comment()">{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments</button>
+				<button class="warning" ng-click="vm.itemFunctions.removeComments()" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
 				<button class="bad" ng-click="vm.itemFunctions.stopAddingComments()">Cancel</button>
 			</div>
 		</li>
