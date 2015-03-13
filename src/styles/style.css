@@ -100,6 +100,25 @@ footer {
   padding: .5rem 0;
   border-top: 1px dashed #ccc; }
 
+.sub-context-menu {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #ccc; }
+  .sub-context-menu li {
+    display: block;
+    border-bottom: 1px solid #ccc;
+    margin: 0;
+    padding: 0; }
+    .sub-context-menu li:last-child {
+      border-bottom: none; }
+    .sub-context-menu li button, .sub-context-menu li a.button-link, .sub-context-menu li input[type="button"], .sub-context-menu li input[type="text"] {
+      border: none;
+      margin: 0;
+      padding: 1rem;
+      border-radius: 0; }
+
 .panel {
   color: #ccc;
   background: #eee;

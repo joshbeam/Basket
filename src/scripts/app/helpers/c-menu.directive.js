@@ -18,7 +18,7 @@
 			var menuItems = scope.$eval(attrs.cMenu),
 				$el = $(element[0]),
 				newEl,
-				subMenu = $('<ul class="unstyled inline-list">'),
+				subMenu = $('<ul class="sub-context-menu">'),
 				li;
 			
 			angular.forEach(menuItems, forEachFn);
@@ -26,14 +26,18 @@
 			
 			if(subMenu.children().length > 0) {
 				li = $('<li>');
-				
+				li.html('<button>...</button>');
 				li.append(subMenu);
+				li.children('ul').hide();
+				
+				li.on('click',function() {
+					$(this).children('ul').slideToggle(250);
+				});
 
 				$el.append(li);
 			}
 			
 			function forEachFn(item) {
-				console.log(item.fn);
 				newEl = $compile( [
 						'<li>',
 						'<button ng-click="'+item.fn+'()">',

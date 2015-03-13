@@ -64,6 +64,34 @@ BUG: when you delete a list, its items are still in localStorage
 				extra: true
 			}
 		);
+		
+		vm.itemViewContextMenu = new ContextMenu(
+			{
+				title: '&laquo;',
+				fn: 'vm.itemFunctions.stopEditing',
+				extra: false
+			},
+			{
+				title: "Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}",
+				fn: 'vm.itemFunctions.togglePurchased',
+				extra: false
+			},
+			{
+				title: 'Edit Description',
+				fn: 'vm.itemFunctions.startEditingDescription',
+				extra: true
+			},
+			{
+				title: "{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
+				fn: 'vm.itemFunctions.startAddingComments',
+				extra: true
+			},
+			{
+				title: 'Assign to...',
+				fn: 'vm.itemFunctions.startAddingComments',
+				extra: true
+			}
+		);
 				
 		function filterItems(item) {
 			return item.list === vm.listName;

@@ -181,8 +181,30 @@ footer {
 	border-top: 1px dashed $light-gray;
 }
 
-.extra-menu-item {
-	//position: absolute;
+.sub-context-menu {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	background: $white;
+	border: 1px solid $light-gray;
+	
+	li {
+		display: block;
+		border-bottom: 1px solid $light-gray;
+		margin: 0;
+		padding: 0;
+		
+		&:last-child {
+			border-bottom: none;
+		}
+		
+		button {
+			border: none;
+			margin: 0;
+			padding: 1rem;
+			@include border-radius(0);
+		}
+	}
 }
 
 //components
