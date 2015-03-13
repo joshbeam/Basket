@@ -11,6 +11,7 @@
 			this.title = config.title;
 			this.fn = config.fn;
 			this.extra = config.extra;
+			this.classString = config.classString;
 		}
 		
 		return Service;

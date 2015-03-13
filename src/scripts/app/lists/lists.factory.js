@@ -21,18 +21,13 @@
 		/////////////////////
 		
 		function populate() {
-			//var deferred = $q.defer();
 
-			//lists = localStore.get('lists') || [];
-			
 			lists = localStore.recreate(localStore.get('lists'),List.prototype) || [];
 
-			//deferred.resolve(lists);
-
-			//return deferred.promise;	
 			return lists;
 		}
-
+		
+		// probably don't need this...
 		function get(type) {
 			/*
 			type
@@ -71,6 +66,8 @@
 					lists.splice(lists.indexOf(list),1);	
 				}
 			});
+			
+			// BUG: also needs to remove all items that were a part of that list
 			
 			this.update();
 		}

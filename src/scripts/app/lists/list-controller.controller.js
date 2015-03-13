@@ -1,7 +1,3 @@
-/*
-BUG: when you delete a list, its items are still in localStorage
-*/
-
 (function() {
 	'use strict';
 	
@@ -51,17 +47,20 @@ BUG: when you delete a list, its items are still in localStorage
 			{
 				title: '+',
 				fn: 'vm.itemFunctions.createNewItem',
-				extra: false
+				extra: false,
+				classString: 'good'
 			},
 			{
 				title: 'Clear Purchased',
 				fn: 'vm.itemFunctions.clearPurchased',
-				extra: true
+				extra: true,
+				classString: ''
 			},
 			{
 				title: 'Delete List',
 				fn: 'vm.itemFunctions.removeList',
-				extra: true
+				extra: true,
+				classString: ''
 			}
 		);
 		
@@ -74,54 +73,47 @@ BUG: when you delete a list, its items are still in localStorage
 			{
 				title: "Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}",
 				fn: 'vm.itemFunctions.togglePurchased',
-				extra: false
+				extra: false,
+				classString: ''
 			},
 			{
 				title: 'Edit Description',
 				fn: 'vm.itemFunctions.startEditingDescription',
-				extra: true
+				extra: true,
+				classString: ''
 			},
 			{
 				title: "{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
 				fn: 'vm.itemFunctions.startAddingComments',
-				extra: true
+				extra: true,
+				classString: ''
 			},
 			{
 				title: 'Assign to...',
 				fn: 'vm.itemFunctions.startAddingComments',
-				extra: true
+				extra: true,
+				classString: ''
 			}
 		);
+		
+		///////////////////////////////
 				
 		function filterItems(item) {
 			return item.list === vm.listName;
-		}
-		
-		function startEditingDescription() {
-			vm.editedDescription = vm.itemBeingEdited.get('description');
-			vm.editingDescription = true;
-			
-			stopAddingComments();
-		}
-		
-		function stopEditingDescription() {
-			vm.editingDescription = false;
-		}
-		
-		function edit() {
-			var item = vm.itemBeingEdited;
-			
-			item.set('description',vm.editedDescription);
-			
-			return stopEditingDescription();
 		}
 		
 		function createNewItem() {
 			vm.creatingNewItem = true;	
 		}
 		
-		function cancel() {
-			vm.creatingNewItem = false;	
+		function startEditing(item) {
+			vm.editingItem = true;
+			vm.itemBeingEdited = item;
+		}
+		
+		function stopEditing() {
+			vm.editingItem = false;
+			vm.itemBeingEdited = '';
 		}
 		
 		function add(desc) {
@@ -139,12 +131,15 @@ BUG: when you delete a list, its items are still in localStorage
 			vm.newItemDescription = '';
 		}
 		
+		function cancel() {
+			vm.creatingNewItem = false;	
+		}
+		
 		function togglePurchased() {
 			var item = vm.itemBeingEdited,
 				purchased = item.get('purchased');
 			
 			item.set('purchased',!purchased);
-			//items.purchased(item.get('$$hashKey'),purchased);
 		}
 		
 		function startAddingComments() {
@@ -172,12 +167,32 @@ BUG: when you delete a list, its items are still in localStorage
 			return stopAddingComments();
 		}
 		
+		
 		function removeComments() {
 			var item = vm.itemBeingEdited;
 			
 			item.set('comments','');
 
 			return stopAddingComments();	
+		}
+		
+		function startEditingDescription() {
+			vm.editedDescription = vm.itemBeingEdited.get('description');
+			vm.editingDescription = true;
+			
+			stopAddingComments();
+		}
+		
+		function stopEditingDescription() {
+			vm.editingDescription = false;
+		}
+		
+		function edit() {
+			var item = vm.itemBeingEdited;
+			
+			item.set('description',vm.editedDescription);
+			
+			return stopEditingDescription();
 		}
 		
 		function clearPurchased() {
@@ -193,22 +208,5 @@ BUG: when you delete a list, its items are still in localStorage
 				return;	
 			}
 		}
-		
-		function startEditing(item) {
-			vm.editingItem = true;
-			vm.itemBeingEdited = item;
-		}
-		
-		function stopEditing() {
-			vm.editingItem = false;
-			vm.itemBeingEdited = '';
-		}
 	}
-	
-	
-//		$scope.$watch(function() {
-//		  return items.get('all');
-//		}, function(newVal, oldVal) {
-//		  $scope.list = newVal;
-//		});
 })();

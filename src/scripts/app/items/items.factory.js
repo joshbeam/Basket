@@ -27,16 +27,12 @@
 		/////////////////////
 		
 		function populate() {
-			//var deferred = $q.defer();
-
 			list = localStore.recreate(localStore.get('shoppingList'),Item.prototype) || [];
 			
-			//deferred.resolve(list);
-
-			//return deferred.promise;	
 			return list;
 		}
 
+		// probably don't need this...
 		function get(type) {
 			/*
 			type
