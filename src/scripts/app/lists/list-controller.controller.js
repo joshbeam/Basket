@@ -9,9 +9,9 @@ BUG: when you delete a list, its items are still in localStorage
 		.module('Basket')
 		.controller('ListController',ListController);
 	
-	ListController.$inject = ['items','lists','$routeParams','$location'];
+	ListController.$inject = ['items','lists','$routeParams','$location','ContextMenu'];
 	
-	function ListController(items,lists,$routeParams,$location) {
+	function ListController(items,lists,$routeParams,$location,ContextMenu) {
 		var vm = this;
 
 		vm.listName = $routeParams.listName;
@@ -47,6 +47,24 @@ BUG: when you delete a list, its items are still in localStorage
 			removeList: removeList,
 		};
 		
+		vm.listViewContextMenu = new ContextMenu(
+			{
+				title: '+',
+				fn: 'vm.itemFunctions.createNewItem',
+				extra: false
+			},
+			{
+				title: 'Clear Purchased',
+				fn: 'vm.itemFunctions.clearPurchased',
+				extra: true
+			},
+			{
+				title: 'Delete List',
+				fn: 'vm.itemFunctions.removeList',
+				extra: true
+			}
+		);
+				
 		function filterItems(item) {
 			return item.list === vm.listName;
 		}
