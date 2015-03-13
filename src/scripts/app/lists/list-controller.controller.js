@@ -1,3 +1,7 @@
+/*
+BUG: when you delete a list, its items are still in localStorage
+*/
+
 (function() {
 	'use strict';
 	
@@ -5,9 +9,9 @@
 		.module('Basket')
 		.controller('ListController',ListController);
 	
-	ListController.$inject = ['items','lists','$routeParams','$location'];
+	ListController.$inject = ['items','lists','$routeParams','$location','ContextMenu'];
 	
-	function ListController(items,lists,$routeParams,$location) {
+	function ListController(items,lists,$routeParams,$location,ContextMenu) {
 		var vm = this;
 
 		vm.listName = $routeParams.listName;
@@ -43,6 +47,52 @@
 			removeList: removeList,
 		};
 		
+		vm.listViewContextMenu = new ContextMenu(
+			{
+				title: '+',
+				fn: 'vm.itemFunctions.createNewItem',
+				extra: false
+			},
+			{
+				title: 'Clear Purchased',
+				fn: 'vm.itemFunctions.clearPurchased',
+				extra: true
+			},
+			{
+				title: 'Delete List',
+				fn: 'vm.itemFunctions.removeList',
+				extra: true
+			}
+		);
+		
+		vm.itemViewContextMenu = new ContextMenu(
+			{
+				title: '&laquo;',
+				fn: 'vm.itemFunctions.stopEditing',
+				extra: false
+			},
+			{
+				title: "Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}",
+				fn: 'vm.itemFunctions.togglePurchased',
+				extra: false
+			},
+			{
+				title: 'Edit Description',
+				fn: 'vm.itemFunctions.startEditingDescription',
+				extra: true
+			},
+			{
+				title: "{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
+				fn: 'vm.itemFunctions.startAddingComments',
+				extra: true
+			},
+			{
+				title: 'Assign to...',
+				fn: 'vm.itemFunctions.startAddingComments',
+				extra: true
+			}
+		);
+				
 		function filterItems(item) {
 			return item.list === vm.listName;
 		}
