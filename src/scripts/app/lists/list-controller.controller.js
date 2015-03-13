@@ -44,7 +44,7 @@ BUG: when you delete a list, its items are still in localStorage
 			edit: edit,
 			//maybe put these in "overall list" object
 			clearPurchased: clearPurchased,
-			removeList: removeList,
+			removeList: removeList
 		};
 		
 		vm.listViewContextMenu = new ContextMenu(

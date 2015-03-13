@@ -28,10 +28,18 @@
 				li = $('<li>');
 				li.html('<button>...</button>');
 				li.append(subMenu);
-				li.children('ul').hide();
+				subMenu = li.children('ul');
+				
+				subMenu.hide();
 				
 				li.on('click',function() {
 					$(this).children('ul').slideToggle(250);
+				});
+				
+				$('body').on('click', function(e) {
+					if(subMenu.is(':visible') && $(e.target).parents('[c-menu]').length === 0) {
+						subMenu.hide();
+					}
 				});
 
 				$el.append(li);
