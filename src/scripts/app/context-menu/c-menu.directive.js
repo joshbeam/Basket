@@ -48,7 +48,7 @@
 			function forEachFn(item) {
 				newEl = $compile( [
 						'<li>',
-						'<button ng-click="'+item.fn+'()">',
+						'<button class="'+item.classString+'" ng-click="'+item.fn+'()">',
 						item.title,
 						'</button>',
 						'</li>'

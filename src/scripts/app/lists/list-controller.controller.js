@@ -51,17 +51,20 @@ BUG: when you delete a list, its items are still in localStorage
 			{
 				title: '+',
 				fn: 'vm.itemFunctions.createNewItem',
-				extra: false
+				extra: false,
+				classString: 'good'
 			},
 			{
 				title: 'Clear Purchased',
 				fn: 'vm.itemFunctions.clearPurchased',
-				extra: true
+				extra: true,
+				classString: ''
 			},
 			{
 				title: 'Delete List',
 				fn: 'vm.itemFunctions.removeList',
-				extra: true
+				extra: true,
+				classString: ''
 			}
 		);
 		
@@ -74,22 +77,26 @@ BUG: when you delete a list, its items are still in localStorage
 			{
 				title: "Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}",
 				fn: 'vm.itemFunctions.togglePurchased',
-				extra: false
+				extra: false,
+				classString: ''
 			},
 			{
 				title: 'Edit Description',
 				fn: 'vm.itemFunctions.startEditingDescription',
-				extra: true
+				extra: true,
+				classString: ''
 			},
 			{
 				title: "{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
 				fn: 'vm.itemFunctions.startAddingComments',
-				extra: true
+				extra: true,
+				classString: ''
 			},
 			{
 				title: 'Assign to...',
 				fn: 'vm.itemFunctions.startAddingComments',
-				extra: true
+				extra: true,
+				classString: ''
 			}
 		);
 				
