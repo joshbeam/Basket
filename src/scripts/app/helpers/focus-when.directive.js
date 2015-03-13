@@ -4,7 +4,6 @@
 
 //similar to: https://coderwall.com/p/a41lwa/angularjs-auto-focus-into-input-field-when-ng-show-event-is-triggered
 
-//how do i inject $timeout with this pattern?
 (function() {
 	angular.module('Basket')
 		.directive('focusWhen',focusWhen);
@@ -19,12 +18,13 @@
 			
 		return d;
 		
+		//FIX THIS!!
 		function link(scope, element, attrs) {
 			scope.$watch(attrs.focusWhen, watchFn, true);		
 
 			function watchFn(newVal) {
 				var bool;
-				
+
 				if(attrs.focusWhen.constructor === Array) {
 					angular.forEach(attrs.focusWhen,forEachFn);
 					

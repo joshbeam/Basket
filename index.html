@@ -22,6 +22,7 @@ TODO: add sharing functionality
 	</footer>
 	
 	<!-- will run a build to concat and minify all of these into one js file -->
+	<script src="src/scripts/lib/jquery/jquery.min.js"></script>
 	<script src="src/scripts/lib/angular/angular.min.js"></script>
 	<script src="src/scripts/lib/angular/angular-route.min.js"></script>
 	
@@ -31,6 +32,8 @@ TODO: add sharing functionality
 	<script src="src/scripts/app/items/items.factory.js"></script>
 	<script src="src/scripts/app/helpers/local-store.factory.js"></script>
 	<script src="src/scripts/app/helpers/focus-when.directive.js"></script>
+	<script src="src/scripts/app/helpers/context-menu.directive.js"></script>
+	<script src="src/scripts/app/helpers/extra-menu-item.directive.js"></script>
 	<script src="src/scripts/app/helpers/key-down.directive.js"></script>
 	<script src="src/scripts/app/lists/lists.factory.js"></script>
 	<script src="src/scripts/app/lists/list.factory.js"></script>
@@ -98,46 +101,46 @@ TODO: add sharing functionality
 			<button class="good" ng-click="vm.itemFunctions.add(vm.newItemDescription)">Add</button>
 			<button class="bad" ng-click="vm.itemFunctions.cancel()">Cancel</button>
 		</div>
-		<ul class="unstyled inline-list" ng-show="vm.creatingNewItem === false && vm.editingItem === false">
+		<ul context-menu="[!vm.creatingNewItem, !vm.editingItem]" class="unstyled inline-list">
 			<li>
 				<button class="good" ng-click="vm.itemFunctions.createNewItem()">
-					Add Item
+					+
 				</button>
 			</li>
-			<li>
+			<li extra-menu-item>
 				<button ng-click="vm.itemFunctions.clearPurchased()">
 					Clear Purchased
 				</button>
 			</li>
-			<li>
+			<li extra-menu-item>
 				<button ng-click="vm.itemFunctions.startAddingPerson()">
 					Add Person
 				</button>
 			</li>
-			<li>
+			<li extra-menu-item>
 				<button class="bad" ng-click="vm.itemFunctions.removeList()">
 					Delete List
 				</button>
 			</li>
 		</ul>
-		<ul class="unstyled inline-list" ng-show="vm.editingItem === true">
-		<li>
-			<button ng-click="vm.itemFunctions.stopEditing()">
-				&laquo;
-			</button>
-		</li>
-		<li>
-			<button ng-click="vm.itemFunctions.togglePurchased()">Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}</button>
-		</li>
-		<li>
-			<button ng-click="vm.itemFunctions.startEditingDescription()">Edit Description</button>
-		</li>
-		<li>
-			<button ng-click="vm.itemFunctions.startAddingComments()">{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments</button>
-		</li>
-		<li>
-			<button ng-click="vm.itemFunctions.startAddingComments()">Assign To...</button>
-		</li>
+		<ul class="unstyled inline-list" context-menu="vm.editingItem">
+			<li>
+				<button ng-click="vm.itemFunctions.stopEditing()">
+					&laquo;
+				</button>
+			</li>
+			<li>
+				<button ng-click="vm.itemFunctions.togglePurchased()">Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}</button>
+			</li>
+			<li extra-menu-item>
+				<button ng-click="vm.itemFunctions.startEditingDescription()">Edit Description</button>
+			</li>
+			<li extra-menu-item>
+				<button ng-click="vm.itemFunctions.startAddingComments()">{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments</button>
+			</li>
+			<li extra-menu-item>
+				<button ng-click="vm.itemFunctions.startAddingComments()">Assign To...</button>
+			</li>
 		</ul>
 	</script>	
 </body>
