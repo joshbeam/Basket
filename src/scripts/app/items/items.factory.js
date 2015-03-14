@@ -13,6 +13,7 @@
 				get: get,
 				add: add,
 				clearPurchased: clearPurchased,
+				remove: remove,
 				update: update
 			};
 		
@@ -33,18 +34,8 @@
 		}
 
 		// probably don't need this...
-		function get(type) {
-			/*
-			type
-			- can be the string 'all' to get all items in list
-			- can be a number that is the id of a specific item
-			*/
-
-			if(type === 'all') {
-				return list;
-			} else if(!isNaN(type)) {
-				//return helpers.where(list,'id',type);
-			}			
+		function get() {
+			return list;	
 		}
 
 		function add(props) {
@@ -75,6 +66,19 @@
 			}
 
 			this.update();			
+		}
+		
+		// should probably combine this with clearPurchased
+		function remove(listName) {
+			var i = list.length;
+			
+			while(i--) {
+				if(list[i].get('list') === listName) {
+					list.splice(i,1);	
+				}
+			}
+
+			this.update();
 		}
 							
 		function update() {

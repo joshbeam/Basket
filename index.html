@@ -8,7 +8,6 @@
 TODO: add key-down directive to all inputs
 TODO: add users to lists
 TODO: add sharing functionality
-BUG: when deleting list item, IE9 doesn't change list item numbers
 -->
 	
 	<!-- prevent IE9 quirks mode -->
@@ -17,9 +16,19 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<title>Basket</title>
 </head>
-<body ng-app="Basket">
+<body jb-body ng-app="Basket">
 	<h1>Basket</h1>
 	<div ng-view></div>
+	<ul ng-controller="PeopleController as vm" class="unstyled inline-list">
+		<li><h5>People: </h5></li>
+		<li ng-show="vm.listName !== null">
+			<button ng-click="vm.peopleFunctions.href()">all</button>
+		</li>
+		<li person ng-click="vm.peopleFunctions.href(person)" class="person" ng-style="{'background-color': '{{vm.shade(person.color, .75)}}', border: '1px solid {{person.color}}'}" ng-repeat="person in vm.people">
+			{{person.name}} {{vm.peopleFunctions.numberOfItems(person)}}
+		</li>
+		<li><button ng-click="vm.peopleFunctions.add()">Add a Person</button></li>
+	</ul>
 	<footer>
 		<small>
 			Implemented by Joshua Beam (<a href="https://www.github.com/joshbeam/Basket">GitHub</a>)		
@@ -33,6 +42,8 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 	
 	<script src="src/scripts/app/basket/basket.module.js"></script>
 	<script src="src/scripts/app/basket/basket.routes.js"></script>
+	<script src="src/scripts/app/helpers/color-generator.factory.js"></script>
+	<script src="src/scripts/app/helpers/shade.factory.js"></script>
 	<script src="src/scripts/app/items/item.factory.js"></script>
 	<script src="src/scripts/app/items/items.factory.js"></script>
 	<script src="src/scripts/app/context-menu/context-menu-item.factory.js"></script>
@@ -43,19 +54,26 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 	<script src="src/scripts/app/helpers/key-down.directive.js"></script>
 	<script src="src/scripts/app/lists/lists.factory.js"></script>
 	<script src="src/scripts/app/lists/list.factory.js"></script>
+	<script src="src/scripts/app/people/person.factory.js"></script>
+	<script src="src/scripts/app/people/people.factory.js"></script>
+	<script src="src/scripts/app/people/jb-body.directive.js"></script>
 	<script src="src/scripts/app/lists/list-controller.controller.js"></script>
 	<script src="src/scripts/app/lists/lists-controller.controller.js"></script>
+	<script src="src/scripts/app/people/people.controller.js"></script>
 	
 	<script type="text/ng-template" id="lists.html">
 		<h2>Shopping Lists<br><small>viewing all</small></h2>
+		
 		<ul class="unstyled item-list">
 			<li ng-repeat="list in vm.lists">
 				<a class="block-link" href="#list/{{list.name}}">{{list.name}}</a>
 			</li>
 		</ul>
+		
 		<div class="panel" ng-show="vm.lists.length === 0">
 			Looks like you don't have any shopping lists! Why don't you create one?
 		</div>
+		
 		<div class="create-box" ng-show="vm.creatingNewList">
 			<input type="text" ng-model="vm.newListName" key-down="vm.listsFunctions.create()" focus-when="vm.creatingNewList" />
 			<button class="good" ng-click="vm.listsFunctions.create()">+</button>
@@ -64,7 +82,7 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 		
 		<ul class="unstyled inline-list">
 			<li>
-			 <button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
+				<button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
 			</li>
 		</ul>
 	</script>
@@ -77,13 +95,13 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 			</ul>
 		</nav>
 		<ol shopping-list class="item-list">
-		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.itemBeingEdited}" ng-click="vm.itemFunctions.startEditing(item)">
+		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.itemBeingEdited}" ng-style="vm.peopleFunctions.personColor(item)" ng-click="vm.itemFunctions.startEditing(item)">
 		
 			<a class="block-link" ng-class="{purchased: item.get('purchased')}">
 				{{item.get('description')}}
 			</a>
 			
-			<div class="item-edit-field" ng-show="vm.editingDescription === true && item === vm.itemBeingEdited && vm.addingComments === false">
+			<div class="item-edit-field" ng-show="vm.assigningItem === false && vm.editingDescription === true && item === vm.itemBeingEdited && vm.addingComments === false">
 				<input type="text" ng-model="vm.editedDescription" />
 				<button class="good" ng-click="vm.itemFunctions.edit()">Save</button>
 				<button class="bad" ng-click="vm.itemFunctions.stopEditingDescription()">Cancel</button>
@@ -93,12 +111,20 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 				{{item.get('comments')}}
 			</div>
 			
-			<div class="item-edit-field" ng-show="vm.addingComments === true && item === vm.itemBeingEdited && vm.editingDescription === false">
+			<div class="item-edit-field" ng-show="vm.assigningItem === false && vm.addingComments === true && item === vm.itemBeingEdited && vm.editingDescription === false">
 				<textarea ng-model="vm.commentsForItemBeingEdited"></textarea>
 				<br>
 				<button class="good" ng-click="vm.itemFunctions.comment()">Save</button>
 				<button class="warning" ng-click="vm.itemFunctions.removeComments()" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
 				<button class="bad" ng-click="vm.itemFunctions.stopAddingComments()">Cancel</button>
+			</div>
+			
+			<div class="item-edit-field" ng-show="vm.assigningItem === true && vm.addingComments === false && item === vm.itemBeingEdited && vm.editingDescription === false">
+				<label for="{{item.description}}-assignTo-{{person.name}}" ng-repeat="person in vm.people"><input type="radio" ng-model="vm.assignedTo" value="{{person.name}}" ng-checked="{{item.person === person.name}}" id="{{item.description}}-assignTo-{{person.name}}" />{{person.name}} </label>
+				<div class="button-group">
+					<button class="good" ng-click="vm.itemFunctions.assignTo()">Assign</button>
+					<button class="bad" ng-click="vm.itemFunctions.stopAssigningTo()">Cancel</button>
+				</div>
 			</div>
 		</li>
 		</ol>   

@@ -5,12 +5,15 @@
 		.module('Basket')
 		.controller('ListController',ListController);
 	
-	ListController.$inject = ['items','lists','$routeParams','$location','ContextMenu'];
+	ListController.$inject = ['$scope','items','lists','$routeParams','$location','ContextMenu','people'];
 	
-	function ListController(items,lists,$routeParams,$location,ContextMenu) {
+	function ListController($scope,items,lists,$routeParams,$location,ContextMenu,people) {
 		var vm = this;
 
+		// people are already populated in PeopleController
+		vm.people = people.get();
 		vm.listName = $routeParams.listName;
+		vm.personName = $routeParams.personName || null;
 		vm.filters = {
 			filterItems: filterItems
 		};
@@ -22,6 +25,8 @@
 		vm.addingComments = false;
 		vm.editingDescription = false;
 		vm.editedDescription = '';
+		vm.assigningItem = false;
+		vm.assignedTo = '';
 		vm.itemBeingEdited = '';
 		vm.newItemDescription = '';
 		vm.itemFunctions = {
@@ -38,10 +43,16 @@
 			startEditingDescription: startEditingDescription,
 			stopEditingDescription: stopEditingDescription,
 			edit: edit,
+			startAssigningTo: startAssigningTo,
+			stopAssigningTo: stopAssigningTo,
+			assignTo: assignTo,
 			//maybe put these in "overall list" object
 			clearPurchased: clearPurchased,
 			removeList: removeList
 		};
+		vm.peopleFunctions = {
+			personColor: personColor	
+		}
 		
 		vm.listViewContextMenu = new ContextMenu(
 			{
@@ -90,7 +101,7 @@
 			},
 			{
 				title: 'Assign to...',
-				fn: 'vm.itemFunctions.startAddingComments',
+				fn: 'vm.itemFunctions.startAssigningTo',
 				extra: true,
 				classString: ''
 			}
@@ -180,7 +191,7 @@
 			vm.editedDescription = vm.itemBeingEdited.get('description');
 			vm.editingDescription = true;
 			
-			stopAddingComments();
+			return stopAddingComments();
 		}
 		
 		function stopEditingDescription() {
@@ -195,6 +206,25 @@
 			return stopEditingDescription();
 		}
 		
+		function startAssigningTo() {
+			vm.assigningItem = true;
+		}
+		
+		function stopAssigningTo() {
+			vm.assigningItem = false;	
+		}
+		
+		function assignTo() {
+			var item = vm.itemBeingEdited;
+			
+			item.set('person',vm.assignedTo);
+			
+			// change path to newly assigned person to see all their items
+			$location.path('/list/'+vm.listName+'/'+vm.assignedTo);
+			
+			return stopAssigningTo();
+		}
+		
 		function clearPurchased() {
 			items.clearPurchased();	
 		}
@@ -203,9 +233,32 @@
 			if(confirm("Do you want to delete this entire shopping list?")) {
 				//remove the list and save the array back to localStorage
 				lists.remove(vm.listName);
+				items.remove(vm.listName);
 				$location.path('/');
 			} else {
 				return;	
+			}
+		}
+		
+		function personColor(item) {
+			var color;
+			
+			if(vm.personName !== null) {
+				angular.forEach(vm.people,function(person) {
+					if(person.name === vm.personName) {
+						color = person.color;
+					}
+				});
+				
+				if(item.person === vm.personName) {
+					return {
+						'background-color': color	
+					};
+				} else {
+					return '';	
+				}
+			} else {
+				return '';				
 			}
 		}
 	}
