@@ -6,8 +6,19 @@
 	
 <!-- 
 TODO: add key-down directive to all inputs
-TODO: add users to lists
+TODO: be able to delete users
 TODO: add sharing functionality
+TODO: unit testing
+TODO: make one-step build process
+TODO: loading icons
+TODO: documentation
+TODO: wireframes
+TODO: option to rename list
+TODO: custom prompt modal function
+TODO: remove 'all' when there are no people at all
+TODO: make creation box go away when clicking item
+TODO: fix padding on people names in mobile view
+TODO: remove jb-body directive
 -->
 	
 	<!-- prevent IE9 quirks mode -->
@@ -21,10 +32,11 @@ TODO: add sharing functionality
 	<div ng-view></div>
 	<ul ng-controller="PeopleController as vm" class="unstyled inline-list">
 		<li><h5>People: </h5></li>
-		<li ng-show="vm.listName !== null">
-			<button ng-click="vm.peopleFunctions.href()">all</button>
+		<li ng-show="vm.listName !== null; vm.people.length > 0">
+			<button ng-click="vm.peopleFunctions.href(); vm.peopleFunctions.stopShowingPersonOptions()">all</button>
 		</li>
-		<li person ng-click="vm.peopleFunctions.href(person)" class="person" ng-style="{'background-color': '{{vm.shade(person.color, .75)}}', border: '1px solid {{person.color}}'}" ng-repeat="person in vm.people">
+		<li person ng-click="vm.peopleFunctions.href(person); vm.peopleFunctions.showPersonOptions(person)" class="person" ng-style="{'background-color': '{{vm.shade(person.color, .75)}}', border: '1px solid {{person.color}}'}" ng-repeat="person in vm.people">
+			<button class="bad" ng-click="vm.peopleFunctions.removePerson()" ng-show="vm.showingPersonOptions && person === vm.personWithOptionsShowing">Delete</button>
 			{{person.name}} {{vm.peopleFunctions.numberOfItems(person)}}
 		</li>
 		<li><button ng-click="vm.peopleFunctions.add()">Add a Person</button></li>

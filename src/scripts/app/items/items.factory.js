@@ -19,6 +19,17 @@
 		
 		$rootScope.$on('itemSet',exec);
 		
+		// need to combine this with some other functions
+		$rootScope.$on('person.remove',onPersonRemove);
+		
+		function onPersonRemove(e,name) {
+			angular.forEach(list, function(item) {
+				if(item.person === name) {
+					item.set('person','');	
+				}
+			});			
+		}
+		
 		function exec() {
 			return exports.update();	
 		}

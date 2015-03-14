@@ -4,9 +4,9 @@
 	angular.module('Basket')
 		.factory('people',people);
 	
-	people.$inject = ['Person','localStore'];
+	people.$inject = ['$rootScope','Person','localStore'];
 	
-	function people(Person,localStore) {
+	function people($rootScope,Person,localStore) {
 		var people = [],
 			exports = {
 				populate: populate,
@@ -27,7 +27,14 @@
 		}
 		
 		function get() {
-			return people;	
+			if(arguments.length === 0) {
+				return people;	
+			} else {
+				// for things like people.get().get('length');
+				if(arguments[0] in this) {
+					return this[arguments[0]];	
+				}
+			}
 		}
 
 		function add(config) {
@@ -63,6 +70,8 @@
 					people.splice(i,1);	
 				}
 			}
+			
+			$rootScope.$broadcast('person.remove',name);
 
 			this.update();					
 		}

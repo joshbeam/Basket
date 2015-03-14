@@ -31,10 +31,18 @@
 		
 		vm.people = people.populate();
 		vm.shade = shade;
+		vm.showingPersonOptions = false;
+		// wonder if I should change the structure of this...
+		// maybe use a filter instead and pass in the person as a param?
+		vm.personWithOptionsShowing = '';
 		vm.peopleFunctions = {
 			add: add,
 			href: href,
-			numberOfItems: numberOfItems
+			numberOfItems: numberOfItems,
+			showPersonOptions: showPersonOptions,
+			// should i make this function a part of "showPersonOptions" by param?
+			stopShowingPersonOptions: stopShowingPersonOptions,
+			removePerson: removePerson
 		};
 		
 		function add(_name_) {
@@ -66,7 +74,6 @@
 			}
 		}
 		
-		// BUG: this doesn't update automatically... you have to refresh
 		function numberOfItems(person) {
 			if(vm.listName !== null) {
 				var count = 0;
@@ -81,6 +88,21 @@
 			} else {
 				return '';	
 			}			
+		}
+		
+		function showPersonOptions(person) {
+			vm.showingPersonOptions = true;
+			vm.personWithOptionsShowing = person;
+		}
+		
+		function stopShowingPersonOptions() {
+			vm.showingPersonOptions = false;
+			vm.personWithOptionsShowing = '';
+		}
+		
+		function removePerson() {
+			$location.path('/list/'+vm.listName);
+			people.remove(vm.personWithOptionsShowing.name);	
 		}
 	}
 })();
