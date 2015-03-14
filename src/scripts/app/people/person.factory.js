@@ -10,8 +10,9 @@
 			set: set
 		}
 		
-		function Service(name) {
-			this.name = name;
+		function Service(config) {
+			this.name = config.name;
+			this.color = config.color;
 		}
 		
 		return Service;

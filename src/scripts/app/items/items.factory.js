@@ -13,6 +13,7 @@
 				get: get,
 				add: add,
 				clearPurchased: clearPurchased,
+				remove: remove,
 				update: update
 			};
 		
@@ -75,6 +76,19 @@
 			}
 
 			this.update();			
+		}
+		
+		// should probably combine this with clearPurchased
+		function remove(listName) {
+			var i = list.length;
+			
+			while(i--) {
+				if(list[i].get('list') === listName) {
+					list.splice(i,1);	
+				}
+			}
+
+			this.update();
 		}
 							
 		function update() {

@@ -119,6 +119,11 @@ footer {
       padding: 1rem;
       border-radius: 0; }
 
+.person {
+  font-size: 12.8px;
+  margin: 0 .5rem 0 0;
+  border-radius: 5px; }
+
 .panel {
   color: #ccc;
   background: #eee;

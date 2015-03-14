@@ -8,7 +8,6 @@
 TODO: add key-down directive to all inputs
 TODO: add users to lists
 TODO: add sharing functionality
-BUG: when deleting list item, IE9 doesn't change list item numbers
 -->
 	
 	<!-- prevent IE9 quirks mode -->
@@ -20,6 +19,11 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 <body ng-app="Basket">
 	<h1>Basket</h1>
 	<div ng-view></div>
+	<ul ng-controller="PeopleController as vm" class="unstyled inline-list">
+		<li><h5>People: </h5></li>
+		<li class="person" ng-style="{color: '{{person.color}}', 'background-color': '{{vm.shade(person.color, .75)}}'}" ng-repeat="person in vm.people">{{person.name}}</li>
+		<li><button ng-click="vm.peopleFunctions.add()">Add a Person</button></li>
+	</ul>
 	<footer>
 		<small>
 			Implemented by Joshua Beam (<a href="https://www.github.com/joshbeam/Basket">GitHub</a>)		
@@ -33,6 +37,8 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 	
 	<script src="src/scripts/app/basket/basket.module.js"></script>
 	<script src="src/scripts/app/basket/basket.routes.js"></script>
+	<script src="src/scripts/app/helpers/color-generator.factory.js"></script>
+	<script src="src/scripts/app/helpers/shade.factory.js"></script>
 	<script src="src/scripts/app/items/item.factory.js"></script>
 	<script src="src/scripts/app/items/items.factory.js"></script>
 	<script src="src/scripts/app/context-menu/context-menu-item.factory.js"></script>
@@ -43,19 +49,25 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 	<script src="src/scripts/app/helpers/key-down.directive.js"></script>
 	<script src="src/scripts/app/lists/lists.factory.js"></script>
 	<script src="src/scripts/app/lists/list.factory.js"></script>
+	<script src="src/scripts/app/people/person.factory.js"></script>
+	<script src="src/scripts/app/people/people.factory.js"></script>
 	<script src="src/scripts/app/lists/list-controller.controller.js"></script>
 	<script src="src/scripts/app/lists/lists-controller.controller.js"></script>
+	<script src="src/scripts/app/people/people.controller.js"></script>
 	
 	<script type="text/ng-template" id="lists.html">
 		<h2>Shopping Lists<br><small>viewing all</small></h2>
+		
 		<ul class="unstyled item-list">
 			<li ng-repeat="list in vm.lists">
 				<a class="block-link" href="#list/{{list.name}}">{{list.name}}</a>
 			</li>
 		</ul>
+		
 		<div class="panel" ng-show="vm.lists.length === 0">
 			Looks like you don't have any shopping lists! Why don't you create one?
 		</div>
+		
 		<div class="create-box" ng-show="vm.creatingNewList">
 			<input type="text" ng-model="vm.newListName" key-down="vm.listsFunctions.create()" focus-when="vm.creatingNewList" />
 			<button class="good" ng-click="vm.listsFunctions.create()">+</button>
@@ -64,7 +76,7 @@ BUG: when deleting list item, IE9 doesn't change list item numbers
 		
 		<ul class="unstyled inline-list">
 			<li>
-			 <button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
+				<button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
 			</li>
 		</ul>
 	</script>

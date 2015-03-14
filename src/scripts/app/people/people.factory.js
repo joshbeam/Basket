@@ -4,9 +4,9 @@
 	angular.module('Basket')
 		.factory('people',people);
 	
-	people.$inject = ['Person'];
+	people.$inject = ['Person','localStore'];
 	
-	function people(Person) {
+	function people(Person,localStore) {
 		var people = [],
 			exports = {
 				populate: populate,
@@ -25,10 +25,32 @@
 			return people;
 		}
 
-		function add(name) {
-			list.push(new Person(name));
-
-			this.update();			
+		function add(config) {
+			var exists = false;
+			
+			angular.forEach(people, forEachFn);
+			
+			if(exists === false) {
+				people.push(new Person({
+					name: config.name,
+					color: config.color
+				}));
+				
+				this.update();
+				
+				// person doesn't already exist
+				return false;
+			} else {
+				
+				//person already exists
+				return true;	
+			}
+			
+			function forEachFn(person) {
+				if(person.name.toLowerCase() === config.name.toLowerCase()) {
+					exists = true;
+				}
+			}
 		}
 		
 		function remove(name) {

@@ -203,6 +203,7 @@
 			if(confirm("Do you want to delete this entire shopping list?")) {
 				//remove the list and save the array back to localStorage
 				lists.remove(vm.listName);
+				items.remove(vm.listName);
 				$location.path('/');
 			} else {
 				return;	

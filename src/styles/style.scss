@@ -169,6 +169,7 @@ footer {
   text-decoration: line-through;
 }
 
+//things
 .item-comments {
 	font-size: $font-size*.75;
 	color: $light-gray;
@@ -205,6 +206,12 @@ footer {
 			@include border-radius(0);
 		}
 	}
+}
+
+.person {
+	font-size: $font-size/1.25;
+	margin: 0 .5rem 0 0;
+	@include border-radius(5px);
 }
 
 //components
