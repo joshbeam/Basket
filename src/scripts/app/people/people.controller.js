@@ -101,7 +101,11 @@
 		}
 		
 		function removePerson() {
-			$location.path('/list/'+vm.listName);
+			//if we're currently viewing a list...
+			if(!!vm.listName) {
+				$location.path('/list/'+vm.listName);
+			}
+			
 			people.remove(vm.personWithOptionsShowing.name);	
 		}
 	}
