@@ -11,34 +11,21 @@
 		$routeProvider.when('/',{
 			templateUrl: 'lists.html',
 			controller: 'ListsController',
-			controllerAs: 'vm',
-//			resolve: {
-//				listsPrep: listsPrep,
-//			}
+			controllerAs: 'vm'
 		})
 		.when('/list/:listName',{
 			templateUrl: 'list.html',
 			controller: 'ListController',
-			controllerAs: 'vm',
-//			resolve: {
-//				itemsPrep: itemsPrep	
-//			}
+			controllerAs: 'vm'
+		})
+		.when('/list/:listName/:personName',{
+			templateUrl: 'list.html',
+			controller: 'ListController',
+			controllerAs: 'vm'
 		})
 		.otherwise({
 			redirectTo: '/'
 		});
 	}
-			
-//	listsPrep.$inject = ['lists'];
-//	
-//	function listsPrep(lists) {
-//		return lists.populate();
-//	}
-//	
-//	itemsPrep.$inject = ['items'];
-//	
-//	function itemsPrep(items) {
-//		return items.populate();	
-//	}
 })();
 

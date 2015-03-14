@@ -10,6 +10,7 @@
 		var people = [],
 			exports = {
 				populate: populate,
+				get: get,
 				add: add,
 				remove: remove,
 				update: update
@@ -24,6 +25,10 @@
 			
 			return people;
 		}
+		
+		function get() {
+			return people;	
+		}
 
 		function add(config) {
 			var exists = false;
@@ -31,10 +36,7 @@
 			angular.forEach(people, forEachFn);
 			
 			if(exists === false) {
-				people.push(new Person({
-					name: config.name,
-					color: config.color
-				}));
+				people.push(new Person(config));
 				
 				this.update();
 				
