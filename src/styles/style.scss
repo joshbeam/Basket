@@ -162,6 +162,7 @@ footer {
 //properties of items
 .selected {
 	background: $extra-light-gray;
+	padding-left: 1rem;
 }
 
 .purchased {
@@ -183,7 +184,7 @@ footer {
 	
 	label {
 		border: 1px solid $dark-gray;
-		background: $light-gray;
+		background: $white;
 		padding: .5rem;
 		margin: 0 .25rem 0 0;
 		font-size: $font-size/1.25;

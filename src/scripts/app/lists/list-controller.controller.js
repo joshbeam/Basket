@@ -5,9 +5,9 @@
 		.module('Basket')
 		.controller('ListController',ListController);
 	
-	ListController.$inject = ['$scope','items','lists','$routeParams','$location','ContextMenu','people'];
+	ListController.$inject = ['$scope','items','lists','$routeParams','$location','ContextMenu','people','shade'];
 	
-	function ListController($scope,items,lists,$routeParams,$location,ContextMenu,people) {
+	function ListController($scope,items,lists,$routeParams,$location,ContextMenu,people,shade) {
 		var vm = this;
 
 		// people are already populated in PeopleController
@@ -162,6 +162,7 @@
 			}
 			
 			stopEditingDescription();
+			stopAssigningTo();
 		}
 		
 		function stopAddingComments() {
@@ -175,7 +176,7 @@
 			
 			item.set('comments',vm.commentsForItemBeingEdited);
 
-			return stopAddingComments();
+			stopAddingComments();
 		}
 		
 		
@@ -184,14 +185,15 @@
 			
 			item.set('comments','');
 
-			return stopAddingComments();	
+			stopAddingComments();	
 		}
 		
 		function startEditingDescription() {
 			vm.editedDescription = vm.itemBeingEdited.get('description');
 			vm.editingDescription = true;
 			
-			return stopAddingComments();
+			stopAddingComments();
+			stopAssigningTo();
 		}
 		
 		function stopEditingDescription() {
@@ -203,11 +205,14 @@
 			
 			item.set('description',vm.editedDescription);
 			
-			return stopEditingDescription();
+			stopEditingDescription();
 		}
 		
 		function startAssigningTo() {
 			vm.assigningItem = true;
+			
+			stopAddingComments();
+			stopEditingDescription();
 		}
 		
 		function stopAssigningTo() {
@@ -252,7 +257,7 @@
 				
 				if(item.person === vm.personName) {
 					return {
-						'background-color': color	
+						'background-color': shade(color,.75)
 					};
 				} else {
 					return '';	
