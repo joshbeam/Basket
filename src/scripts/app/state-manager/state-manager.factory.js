@@ -4,7 +4,9 @@
 	angular.module('Basket')
 		.factory('stateManager',stateManager);
 	
-	function stateManager() {
+	stateManager.$inject = ['$timeout'];
+	
+	function stateManager($timeout) {
 		var exports = {
 			StateGroup: StateGroup,
 			State: State
@@ -21,14 +23,15 @@
 			stop: stop,
 			done: done,
 			subject: subject,
-			model: model
+			model: model,
+			isActive: isActive
 		};
 		
 		return exports;	
 		
 		function StateGroup() {
 			this.states = [];
-			
+						
 			angular.forEach(arguments,function(state) {
 				this.states.push(new State(state));
 			}.bind(this));
@@ -58,28 +61,25 @@
 		}
 		
 		function exclusive() {
-			var stateNames = arguments;
-			
-			angular.forEach(stateNames, forEachFn.bind(this));
-			
-			function forEachFn(stateName) {
-				//get the currently looped state
-				var state = this.states.filter(stateFilter)[0];
+			// try to make this cleaner
+			var stateNames = Array.prototype.slice.call(arguments);			
+			//['addingComments','editingDescription']
+			angular.forEach(stateNames, function(name) {
+				var current = this.states.filter(function(state) {
+					return state.$name === name;
+				});
 				
-				angular.forEach(this.states.filter(notStateFilter),exclusiveOfPush);
+				var exclusiveOf = stateNames.filter(function(stateName) {
+					return stateName !== current[0].$name;
+				});
 				
-				function exclusiveOfPush(otherState) {
-					state.$exclusiveOf.push(otherState);
-				}
+				angular.forEach(exclusiveOf, function(stateName) {
+					current[0].$exclusiveOf.push(this.states.filter(function(state) {
+						return state.$name === stateName;
+					})[0]);
+				}.bind(this));
 				
-				function stateFilter(el) {
-					return el.$name === stateName;
-				}
-				
-				function notStateFilter(el) {
-					return el.$name !== stateName;
-				}
-			}
+			}.bind(this));
 		}
 		
 		function stateGet(prop) {
@@ -88,8 +88,13 @@
 		
 		function start(subject,model) {
 			this.$active = true;
+			// almost no point in setting the subject if we can't use it...
 			this.$subject = subject || null;
 			this.$model = model || null;
+						
+			angular.forEach(this.$exclusiveOf,function(state) {
+				state.stop();
+			}.bind(this));
 			
 			if(this.$start !== null) {
 				return this.$start(subject,model);
@@ -105,11 +110,11 @@
 			}
 		}
 		
-		function done(subject,model,keepCurrentSubject) {
+		function done(subject,model,aux,keepCurrentSubject) {
 			this.stop(keepCurrentSubject);
 			
 			if(this.$done !== null) {
-				return this.$done(subject,model);
+				return this.$done(subject,model,aux);
 			}
 		}
 		
@@ -127,6 +132,10 @@
 			} else if (!val) {
 				return this.$model;	
 			}			
+		}
+		
+		function isActive() {
+			return this.$active;	
 		}
 	}
 })();

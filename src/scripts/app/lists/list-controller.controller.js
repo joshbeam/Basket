@@ -10,37 +10,8 @@
 	function ListController($scope,items,lists,$routeParams,$location,ContextMenu,people,shade,stateManager) {
 		var vm = this;
 		
-		vm.states = new stateManager.StateGroup(
-			{
-				name: 'editing'
-			},
-			{
-				name: 'addingComments',
-				start: function(subject,model) {
-					var comments = subject.get('comments');
-					
-					if(comments.trim() === '') {
-						this.model('');	
-					} else {
-						this.model(comments);	
-					}
-				},
-				done: function(subject,model) {
-					subject.set('comments',this.model());
-				}
-			},
-			{
-				name: 'editingDescription',
-				start: function(subject,model) {
-					this.model(subject.get('description'));
-				},
-				done: function(subject,model) {
-					subject.set('description',model);
-				}
-			}
-		);
-
 		// people are already populated in PeopleController
+		// therefore, only need to call the 'get' method
 		vm.people = people.get();
 		vm.listName = $routeParams.listName;
 		vm.personName = $routeParams.personName || null;
@@ -49,47 +20,92 @@
 		};
 		vm.items = items.populate();
 		
-		/*
-		vm.states.get('editing').start(vm.items[0]);
+		var editing = {
+			name: 'editing'
+		};
 		
-		vm.states.get('addingComments').start(vm.states.get('editing').subject());
+		var creating = {
+			name: 'creating',
+			done: function() {
+				var description = vm.models.newItemDescription;
+
+				if(description.trim() === '') {
+					return; 	
+				}
+
+				items.add({
+					description: description,
+					comments: '',
+					list: vm.listName,
+					person: ''
+				});
+
+				vm.models.newItemDescription = '';
+
+				// need to be able to pass in {stop: false}
+				// this way the new item box will stay open
+			}
+		};
 		
-		vm.states.get('addingComments').done(vm.states.get('addingComments').subject());
+		var addingComments = {
+			name: 'addingComments',
+			start: function(subject) {
+				var comments = subject.get('comments');
+
+				if(comments.trim() === '') {
+					vm.models.commentsForItemBeingEdited = '';	
+				} else {
+					vm.models.commentsForItemBeingEdited = comments;
+				}
+			},
+			// should probably use an object of parameters instead
+			done: function(subject,model,aux) {
+				subject.set('comments',vm.models.commentsForItemBeingEdited);
+
+				if(!!aux && aux.indexOf('remove') > -1) {
+					subject.set('comments','');	
+				}
+			}
+		};
 		
-		*/
+		var editingDescription = {
+			name: 'editingDescription',
+			done: function(subject,model) {
+				subject.set('description',vm.models.editedDescription);
+			}
+		};
 		
-		//maybe organize this into 'states' and 'functions'
-		vm.creatingNewItem = false;
-		vm.editingItem = false;
-		vm.commentsForItemBeingEdited = '';
-		vm.addingComments = false;
-		vm.editingDescription = false;
-		vm.editedDescription = '';
-		vm.assigningItem = false;
-		vm.assignedTo = '';
-		vm.itemBeingEdited = '';
-		vm.newItemDescription = '';
+		// need to be able to remove currently assigned person
+		var assigning = {
+			name: 'assigning',
+			done: function(subject) {
+				subject.set('person',vm.models.assignedTo);
+
+				// change path to newly assigned person to see all their items
+				$location.path('/list/'+vm.listName+'/'+vm.models.assignedTo);
+			}
+		};		
+		
+		// maybe try to be able to use this syntax: vm.states('editing').subject()
+		// etc...
+		vm.states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);
+		
+		vm.states.exclusive('addingComments','editingDescription','assigning');
+		vm.states.exclusive('editing','creating');
+		
+		vm.models = {
+			commentsForItemBeingEdited: '',
+			editedDescription: '',
+			assignedTo: '',
+			newItemDescription: ''
+		}
+
 		vm.itemFunctions = {
-			createNewItem: createNewItem,
-			startEditing: startEditing,
-			stopEditing: stopEditing,
-			add: add,
-			cancel: cancel,
 			togglePurchased: togglePurchased,
-			startAddingComments: startAddingComments,
-			stopAddingComments: stopAddingComments,
-			comment: comment,
-			removeComments: removeComments,
-			startEditingDescription: startEditingDescription,
-			stopEditingDescription: stopEditingDescription,
-			edit: edit,
-			startAssigningTo: startAssigningTo,
-			stopAssigningTo: stopAssigningTo,
-			assignTo: assignTo,
-			//maybe put these in "overall list" object
 			clearPurchased: clearPurchased,
 			removeList: removeList
 		};
+		
 		vm.peopleFunctions = {
 			personColor: personColor	
 		}
@@ -97,7 +113,7 @@
 		vm.listViewContextMenu = new ContextMenu(
 			{
 				title: '+',
-				fn: 'vm.itemFunctions.createNewItem',
+				fn: "vm.states.get('creating').start()",
 				extra: false,
 				classString: 'good'
 			},
@@ -118,30 +134,31 @@
 		vm.itemViewContextMenu = new ContextMenu(
 			{
 				title: '&laquo;',
-				fn: 'vm.itemFunctions.stopEditing',
-				extra: false
+				fn: "vm.states.get('editing').stop()",
+				extra: false,
+				classString: ''
 			},
 			{
-				title: "Mark as {{vm.itemBeingEdited.get('purchased') === false ? 'purchased' : 'not purchased'}}",
+				title: "Mark as {{vm.states.get('editing').subject().get('purchased') === false ? 'purchased' : 'not purchased'}}",
 				fn: 'vm.itemFunctions.togglePurchased',
 				extra: false,
 				classString: ''
 			},
 			{
 				title: 'Edit Description',
-				fn: 'vm.itemFunctions.startEditingDescription',
+				fn: "vm.states.get('editingDescription').start(vm.states.get('editing').subject())",
 				extra: true,
 				classString: ''
 			},
 			{
-				title: "{{vm.itemBeingEdited.get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
-				fn: 'vm.itemFunctions.startAddingComments',
+				title: "{{vm.states.get('editing').subject().get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
+				fn: "vm.states.get('addingComments').start(vm.states.get('editing').subject())",
 				extra: true,
 				classString: ''
 			},
 			{
 				title: 'Assign to...',
-				fn: 'vm.itemFunctions.startAssigningTo',
+				fn: "vm.states.get('assigning').start()",
 				extra: true,
 				classString: ''
 			}
@@ -153,121 +170,11 @@
 			return item.list === vm.listName;
 		}
 		
-		function createNewItem() {
-			vm.creatingNewItem = true;	
-		}
-		
-		function startEditing(item) {
-			vm.editingItem = true;
-			vm.itemBeingEdited = item;
-		}
-		
-		function stopEditing() {
-			vm.editingItem = false;
-			vm.itemBeingEdited = '';
-		}
-		
-		function add(desc) {
-			if(desc.trim() === '') {
-				return; 	
-			}
-			
-			items.add({
-				description: desc,
-				comments: '',
-				list: vm.listName,
-				person: ''
-			});
-			
-			vm.newItemDescription = '';
-		}
-		
-		function cancel() {
-			vm.creatingNewItem = false;	
-		}
-		
 		function togglePurchased() {
-			var item = vm.itemBeingEdited,
+			var item = vm.states.get('editing').subject(),
 				purchased = item.get('purchased');
 			
 			item.set('purchased',!purchased);
-		}
-		
-		function startAddingComments() {
-			vm.addingComments = true;
-			if(vm.itemBeingEdited.get('comments').trim() === '') {
-				vm.commentsForItemBeingEdited = '';	
-			} else {
-				vm.commentsForItemBeingEdited = vm.itemBeingEdited.get('comments');	
-			}
-			
-			stopEditingDescription();
-			stopAssigningTo();
-		}
-		
-		function stopAddingComments() {
-			vm.addingComments = false;
-			
-			vm.commentsForItemBeingEdited = '';
-		}
-		
-		function comment() {
-			var item = vm.itemBeingEdited;
-			
-			item.set('comments',vm.commentsForItemBeingEdited);
-
-			stopAddingComments();
-		}
-		
-		
-		function removeComments() {
-			var item = vm.itemBeingEdited;
-			
-			item.set('comments','');
-
-			stopAddingComments();	
-		}
-		
-		function startEditingDescription() {
-			vm.editedDescription = vm.itemBeingEdited.get('description');
-			vm.editingDescription = true;
-			
-			stopAddingComments();
-			stopAssigningTo();
-		}
-		
-		function stopEditingDescription() {
-			vm.editingDescription = false;
-		}
-		
-		function edit() {
-			var item = vm.itemBeingEdited;
-			
-			item.set('description',vm.editedDescription);
-			
-			stopEditingDescription();
-		}
-		
-		function startAssigningTo() {
-			vm.assigningItem = true;
-			
-			stopAddingComments();
-			stopEditingDescription();
-		}
-		
-		function stopAssigningTo() {
-			vm.assigningItem = false;	
-		}
-		
-		function assignTo() {
-			var item = vm.itemBeingEdited;
-			
-			item.set('person',vm.assignedTo);
-			
-			// change path to newly assigned person to see all their items
-			$location.path('/list/'+vm.listName+'/'+vm.assignedTo);
-			
-			return stopAssigningTo();
 		}
 		
 		function clearPurchased() {
