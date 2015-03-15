@@ -49,7 +49,8 @@
 		
 		var addingComments = {
 			name: 'addingComments',
-			start: function(subject) {
+			start: function(subject,model) {
+				console.log(model);
 				var comments = subject.get('comments');
 
 				if(comments.trim() === '') {
@@ -152,7 +153,7 @@
 			},
 			{
 				title: "{{vm.states.get('editing').subject().get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
-				fn: "vm.states.get('addingComments').start(vm.states.get('editing').subject())",
+				fn: "vm.states.get('addingComments').start(vm.states.get('editing').subject(),vm.models.commentsForItemBeingEdited)",
 				extra: true,
 				classString: ''
 			},

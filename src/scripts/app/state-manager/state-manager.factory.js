@@ -45,7 +45,7 @@
 			// pass by reference is magic
 			this.$subject = config.subject || {};
 			this.$active = false;
-			this.$model = config.model || {};
+			this.$model = !!config.model || config.model === '' ? model : {};
 			this.$exclusiveOf = [];
 		}
 		
@@ -91,14 +91,14 @@
 			this.$active = true;
 			// pass by reference!
 			this.$subject = subject || {};
-			this.$model = model || {};
+			this.$model = !!model || model === '' ? model : {};
 									
 			angular.forEach(this.$exclusiveOf,function(state) {
 				state.stop();
 			}.bind(this));
 			
 			if(this.$start !== null) {
-				return this.$start(this.$subject,model);
+				return this.$start(this.$subject,this.$model);
 			}
 		}
 		
@@ -111,9 +111,9 @@
 			}
 		}
 		
-		function done(model,aux,keepCurrentSubject) {
+		function done(aux,keepCurrentSubject) {
 			if(this.$done !== null) {
-				this.$done(this.$subject,model,aux);
+				this.$done(this.$subject,this.$model,aux);
 			}
 			
 			// this *has* to be called second, since it can reset the subject

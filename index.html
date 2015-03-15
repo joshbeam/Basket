@@ -128,7 +128,7 @@ TODO: remove jb-body directive
 				<textarea ng-model="vm.models.commentsForItemBeingEdited"></textarea>
 				<br>
 				<button class="good" ng-click="vm.states.get('addingComments').done()">Save</button>
-				<button class="warning" ng-click="vm.states.get('addingComments').done(null,['remove'])" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
+				<button class="warning" ng-click="vm.states.get('addingComments').done(['remove'])" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
 				<button class="bad" ng-click="vm.states.get('addingComments').stop()">Cancel</button>
 			</div>
 			
