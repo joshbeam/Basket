@@ -5,10 +5,40 @@
 		.module('Basket')
 		.controller('ListController',ListController);
 	
-	ListController.$inject = ['$scope','items','lists','$routeParams','$location','ContextMenu','people','shade'];
+	ListController.$inject = ['$scope','items','lists','$routeParams','$location','ContextMenu','people','shade','stateManager'];
 	
-	function ListController($scope,items,lists,$routeParams,$location,ContextMenu,people,shade) {
+	function ListController($scope,items,lists,$routeParams,$location,ContextMenu,people,shade,stateManager) {
 		var vm = this;
+		
+		vm.states = new stateManager.StateGroup(
+			{
+				name: 'editing'
+			},
+			{
+				name: 'addingComments',
+				start: function(subject,model) {
+					var comments = subject.get('comments');
+					
+					if(comments.trim() === '') {
+						this.model('');	
+					} else {
+						this.model(comments);	
+					}
+				},
+				done: function(subject,model) {
+					subject.set('comments',this.model());
+				}
+			},
+			{
+				name: 'editingDescription',
+				start: function(subject,model) {
+					this.model(subject.get('description'));
+				},
+				done: function(subject,model) {
+					subject.set('description',model);
+				}
+			}
+		);
 
 		// people are already populated in PeopleController
 		vm.people = people.get();
@@ -18,6 +48,16 @@
 			filterItems: filterItems
 		};
 		vm.items = items.populate();
+		
+		/*
+		vm.states.get('editing').start(vm.items[0]);
+		
+		vm.states.get('addingComments').start(vm.states.get('editing').subject());
+		
+		vm.states.get('addingComments').done(vm.states.get('addingComments').subject());
+		
+		*/
+		
 		//maybe organize this into 'states' and 'functions'
 		vm.creatingNewItem = false;
 		vm.editingItem = false;
