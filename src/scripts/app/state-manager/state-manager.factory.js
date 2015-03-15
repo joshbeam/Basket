@@ -42,9 +42,10 @@
 			this.$start = config.start || null;
 			this.$stop = config.stop || null;
 			this.$done = config.done || null;
-			this.$subject = config.subject || null;
+			// pass by reference is magic
+			this.$subject = config.subject || {};
 			this.$active = false;
-			this.$model = config.model || null;
+			this.$model = config.model || {};
 			this.$exclusiveOf = [];
 		}
 		
@@ -88,34 +89,36 @@
 		
 		function start(subject,model) {
 			this.$active = true;
-			// almost no point in setting the subject if we can't use it...
-			this.$subject = subject || null;
-			this.$model = model || null;
-						
+			// pass by reference!
+			this.$subject = subject || {};
+			this.$model = model || {};
+									
 			angular.forEach(this.$exclusiveOf,function(state) {
 				state.stop();
 			}.bind(this));
 			
 			if(this.$start !== null) {
-				return this.$start(subject,model);
+				return this.$start(this.$subject,model);
 			}
 		}
 		
 		function stop(keepCurrentSubject) {
 			this.$active = false;
-			this.$subject = !!keepCurrentSubject ? this.$subject : null;
+			this.$subject = !!keepCurrentSubject ? this.$subject : {};
 			
 			if(this.$stop !== null) {
 				return this.$stop();
 			}
 		}
 		
-		function done(subject,model,aux,keepCurrentSubject) {
-			this.stop(keepCurrentSubject);
-			
+		function done(model,aux,keepCurrentSubject) {
 			if(this.$done !== null) {
-				return this.$done(subject,model,aux);
+				this.$done(this.$subject,model,aux);
 			}
+			
+			// this *has* to be called second, since it can reset the subject
+			// if keepCurrentSubject is not passed in
+			return this.stop(keepCurrentSubject);
 		}
 		
 		function subject(val) {

@@ -116,7 +116,7 @@ TODO: remove jb-body directive
 			
 			<div class="item-edit-field" ng-show="!vm.states.get('assigning').isActive() && vm.states.get('editingDescription').isActive() && item === vm.states.get('editing').subject() && !vm.states.get('addingComments').isActive()">
 				<input type="text" ng-model="vm.models.editedDescription" />
-				<button class="good" ng-click="vm.states.get('editingDescription').done(vm.states.get('editing').subject())">Save</button>
+				<button class="good" ng-click="vm.states.get('editingDescription').done()">Save</button>
 				<button class="bad" ng-click="vm.states.get('editingDescription').stop()">Cancel</button>
 			</div>
 			
@@ -127,15 +127,15 @@ TODO: remove jb-body directive
 			<div class="item-edit-field" ng-show="!vm.states.get('assigning').isActive() && vm.states.get('addingComments').isActive() && item === vm.states.get('editing').subject() && !vm.states.get('editingDescription').isActive()">
 				<textarea ng-model="vm.models.commentsForItemBeingEdited"></textarea>
 				<br>
-				<button class="good" ng-click="vm.states.get('addingComments').done(vm.states.get('editing').subject())">Save</button>
-				<button class="warning" ng-click="vm.states.get('addingComments').done(vm.states.get('editing').subject(),null,['remove'])" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
+				<button class="good" ng-click="vm.states.get('addingComments').done()">Save</button>
+				<button class="warning" ng-click="vm.states.get('addingComments').done(null,['remove'])" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
 				<button class="bad" ng-click="vm.states.get('addingComments').stop()">Cancel</button>
 			</div>
 			
 			<div class="item-edit-field" ng-show="vm.states.get('assigning').isActive() && !vm.states.get('addingComments').isActive() && item === vm.states.get('editing').subject() && !vm.states.get('editingDescription').isActive()">
 				<label for="{{item.description}}-assignTo-{{person.name}}" ng-repeat="person in vm.people"><input type="radio" ng-model="vm.models.assignedTo" value="{{person.name}}" ng-checked="{{item.person === person.name}}" id="{{item.description}}-assignTo-{{person.name}}" />{{person.name}} </label>
 				<div class="button-group">
-					<button class="good" ng-click="vm.states.get('assigning').done(vm.states.get('editing').subject())">Assign</button>
+					<button class="good" ng-click="vm.states.get('assigning').done()">Assign</button>
 					<button class="bad" ng-click="vm.states.get('assigning').stop()">Cancel</button>
 				</div>
 			</div>

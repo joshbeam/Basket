@@ -158,7 +158,7 @@
 			},
 			{
 				title: 'Assign to...',
-				fn: "vm.states.get('assigning').start()",
+				fn: "vm.states.get('assigning').start(vm.states.get('editing').subject())",
 				extra: true,
 				classString: ''
 			}
