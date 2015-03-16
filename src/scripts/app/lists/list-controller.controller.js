@@ -26,13 +26,8 @@
 		
 		var creating = {
 			name: 'creating',
-			start: function(subject,model) {
-				console.log('creating model: ',model);	
-			},
 			done: function(subject,model) {
-				console.log('done subject: ', subject);
-				console.log('done model: ', model);
-				var description = vm.models.newItemDescription;
+				var description = model;
 
 				if(description.trim() === '') {
 					return;	
@@ -44,11 +39,6 @@
 					list: vm.listName,
 					person: ''
 				});
-				
-				vm.models.newItemDescription = '';
-
-				// need to be able to pass in {stop: false}
-				// this way the new item box will stay open
 			}
 		};
 		
@@ -56,11 +46,11 @@
 			name: 'addingComments',
 			start: function(subject) {
 				var comments = subject.get('comments');
-
+				// set the model
 				if(comments.trim() === '') {
-					vm.models.commentsForItemBeingEdited = '';	
+					this.model('');
 				} else {
-					vm.models.commentsForItemBeingEdited = comments;
+					this.model(comments);
 				}
 			},
 			// should probably use an object of parameters instead
@@ -96,16 +86,10 @@
 		// etc...
 		vm.states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);
 		
+		// need to be able to group these in a config method
 		vm.states().exclusive('addingComments','editingDescription','assigning');
 		vm.states().exclusive('editing','creating');
-		
 		vm.states().scope(this);
-		
-//		$scope.$watch(function() {
-//			return vm.models;	
-//		}, function(n) {
-//			console.log('vm.states models: ', vm.states().scope().models);
-//		}.bind(this),true);
 		
 				
 		vm.models = {
@@ -128,7 +112,7 @@
 		vm.listViewContextMenu = new ContextMenu(
 			{
 				title: '+',
-				fn: "vm.states('creating').start(null,'models.newItemDescription')",
+				fn: "vm.states('creating').start(null,'vm.models.newItemDescription')",
 				extra: false,
 				classString: 'good'
 			},
@@ -167,7 +151,7 @@
 			},
 			{
 				title: "{{vm.states('editing').subject().get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
-				fn: "vm.states('addingComments').start(vm.states('editing').subject(),vm.models.commentsForItemBeingEdited)",
+				fn: "vm.states('addingComments').start(vm.states('editing').subject(),'vm.models.commentsForItemBeingEdited')",
 				extra: true,
 				classString: ''
 			},
