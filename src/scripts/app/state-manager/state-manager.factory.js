@@ -63,19 +63,28 @@
 		
 		function exclusive() {
 			// try to make this cleaner
-			var stateNames = Array.prototype.slice.call(arguments);			
-			//['addingComments','editingDescription']
+			var stateNames = Array.prototype.slice.call(arguments);	
+			
+			// e.g. stateNames === ['addingComments','editingDescription','assigning']
 			angular.forEach(stateNames, function(name) {
+				
+				// get the currently looped State
+				// e.g. 'addingComments'
 				var current = this.states.filter(function(state) {
 					return state.$name === name;
-				});
+				})[0];
 				
+				// create a new array of names that doesn't contain the currently looped State's name
+				// e.g. ['editingDescription','assigning']
 				var exclusiveOf = stateNames.filter(function(stateName) {
-					return stateName !== current[0].$name;
+					return stateName !== current.$name;
 				});
 				
+				// in the currently looped State's $exclusiveOf array,
+				// push all the other State objects
+				// e.g. $exclusiveOf === [State, State]
 				angular.forEach(exclusiveOf, function(stateName) {
-					current[0].$exclusiveOf.push(this.states.filter(function(state) {
+					current.$exclusiveOf.push(this.states.filter(function(state) {
 						return state.$name === stateName;
 					})[0]);
 				}.bind(this));
