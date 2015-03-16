@@ -18,7 +18,6 @@ TODO: custom prompt modal function
 TODO: remove 'all' when there are no people at all
 TODO: make creation box go away when clicking item
 TODO: fix padding on people names in mobile view
-TODO: remove jb-body directive
 -->
 	
 	<!-- prevent IE9 quirks mode -->
@@ -27,7 +26,7 @@ TODO: remove jb-body directive
 	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<title>Basket</title>
 </head>
-<body jb-body ng-app="Basket">
+<body ng-app="Basket">
 	<h1>Basket</h1>
 	<div ng-view></div>
 	<ul ng-controller="PeopleController as vm" class="unstyled inline-list">
@@ -69,7 +68,6 @@ TODO: remove jb-body directive
 	<script src="src/scripts/app/lists/list.factory.js"></script>
 	<script src="src/scripts/app/people/person.factory.js"></script>
 	<script src="src/scripts/app/people/people.factory.js"></script>
-	<script src="src/scripts/app/people/jb-body.directive.js"></script>
 	<script src="src/scripts/app/lists/list-controller.controller.js"></script>
 	<script src="src/scripts/app/lists/lists-controller.controller.js"></script>
 	<script src="src/scripts/app/people/people.controller.js"></script>
