@@ -31,6 +31,7 @@
 		
 		function StateGroup() {
 			this.states = [];
+			this.$scope = {};
 						
 			angular.forEach(arguments,function(state) {
 				this.states.push(new State(state));
@@ -72,6 +73,7 @@
 			this.$model = !!config.model || config.model === '' ? model : {};
 			this.$exclusiveOf = [];
 			this.$auxillary = config.auxillary || {};
+			//this.$scope = config.scope || {};
 		}
 		
 		function getAll() {
@@ -109,28 +111,47 @@
 			}.bind(this));
 		}
 		
-		function scope(_scope_) {
-			var scope = _scope_;
+		function scope(scope) {
+			if(!!scope) {
+				this.$scope = scope;
+				angular.forEach(this.states,function(state) {
+					state.$scope = scope;
+				});
+			} else {
+				return this.$scope;	
+			}
 			
-			console.log(scope);
+			console.log('scope set in StateGroup to: ', scope);
 		}
 		
 		function stateGet(prop) {
 			if(prop in this) return this[prop];
 		}
 		
-		function start(subject/*,model*/) {
+		function start(subject,model) {
+			var m;
+			
 			this.$active = true;
 			// pass by reference!
 			this.$subject = subject || {};
-			//this.$model = !!model || model === '' ? model : {};
+			this.$model = {};
+			
+			angular.forEach(model.split('.'),function(key) {
+				if(!!m) {
+					m = m[key];	
+				} else {
+					m = this.$scope[key];	
+				}
+			}.bind(this));
+			
+			this.$model = m;
 									
 			angular.forEach(this.$exclusiveOf,function(state) {
 				state.stop();
 			}.bind(this));
 			
 			if(this.$start !== null) {
-				return this.$start(this.$subject/*,this.$model*/);
+				return this.$start(this.$subject,this.$model);
 			}
 		}
 		
@@ -144,8 +165,10 @@
 		}
 		
 		function done(keepCurrentSubject) {
+			// model doesn't get updated from Angular's two way data binding...
+			console.log(this.$model);
 			if(this.$done !== null) {
-				this.$done(this.$subject/*,this.$model*/);
+				this.$done(this.$subject,this.$model);
 			}
 			
 			// this *has* to be called second, since it can reset the subject

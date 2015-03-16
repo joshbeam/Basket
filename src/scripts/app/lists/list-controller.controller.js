@@ -26,7 +26,12 @@
 		
 		var creating = {
 			name: 'creating',
-			done: function() {
+			start: function(subject,model) {
+				console.log('creating model: ',model);	
+			},
+			done: function(subject,model) {
+				console.log('done subject: ', subject);
+				console.log('done model: ', model);
 				var description = vm.models.newItemDescription;
 
 				if(description.trim() === '') {
@@ -39,7 +44,7 @@
 					list: vm.listName,
 					person: ''
 				});
-
+				
 				vm.models.newItemDescription = '';
 
 				// need to be able to pass in {stop: false}
@@ -93,6 +98,15 @@
 		
 		vm.states().exclusive('addingComments','editingDescription','assigning');
 		vm.states().exclusive('editing','creating');
+		
+		vm.states().scope(this);
+		
+//		$scope.$watch(function() {
+//			return vm.models;	
+//		}, function(n) {
+//			console.log('vm.states models: ', vm.states().scope().models);
+//		}.bind(this),true);
+		
 				
 		vm.models = {
 			commentsForItemBeingEdited: '',
@@ -114,7 +128,7 @@
 		vm.listViewContextMenu = new ContextMenu(
 			{
 				title: '+',
-				fn: "vm.states('creating').start()",
+				fn: "vm.states('creating').start(null,'models.newItemDescription')",
 				extra: false,
 				classString: 'good'
 			},
