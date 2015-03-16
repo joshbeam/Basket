@@ -126,7 +126,7 @@ TODO: fix padding on people names in mobile view
 				<textarea ng-model="vm.models.commentsForItemBeingEdited"></textarea>
 				<br>
 				<button class="good" ng-click="vm.states.get('addingComments').done()">Save</button>
-				<button class="warning" ng-click="vm.states.get('addingComments').done(['remove'])" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
+				<button class="warning" ng-click="vm.states.get('addingComments').done(true).and({remove: 'hi'})" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
 				<button class="bad" ng-click="vm.states.get('addingComments').stop()">Cancel</button>
 			</div>
 			

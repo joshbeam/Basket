@@ -49,7 +49,7 @@
 		
 		var addingComments = {
 			name: 'addingComments',
-			start: function(subject,model) {
+			start: function(subject) {
 				var comments = subject.get('comments');
 
 				if(comments.trim() === '') {
@@ -59,10 +59,12 @@
 				}
 			},
 			// should probably use an object of parameters instead
-			done: function(subject,model,aux) {
+			done: function(subject) {
 				subject.set('comments',vm.models.commentsForItemBeingEdited);
-
-				if(!!aux && aux.indexOf('remove') > -1) {
+			},
+			auxillary: {
+				remove: function(subject,test) {
+					console.log(test);
 					subject.set('comments','');	
 				}
 			}
@@ -92,7 +94,7 @@
 		
 		vm.states.exclusive('addingComments','editingDescription','assigning');
 		vm.states.exclusive('editing','creating');
-		
+				
 		vm.models = {
 			commentsForItemBeingEdited: '',
 			editedDescription: '',
