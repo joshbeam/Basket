@@ -46,7 +46,7 @@
 				angular.forEach(arrOfObjs,function(obj) {
 					//Object.create in IE9+
 					newObj = Object.create(objPrototype);
-					for(key in obj) {
+					for(var key in obj) {
 						newObj[key] = obj[key];	
 					}
 					newArr.push(newObj);

@@ -56,7 +56,7 @@
 
 				this.update();		
 			} else {
-				alert('Choose a unique name');
+				window.alert('Choose a unique name');
 			}
 		}
 		
