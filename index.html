@@ -106,7 +106,7 @@ TODO: fix padding on people names in mobile view
 			</ul>
 		</nav>
 		<ol shopping-list class="item-list">
-		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.states('editing').subject()}" ng-style="vm.peopleFunctions.personColor(item)" ng-click="vm.states('editing').start(item)">
+		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.states('editing').subject()}" ng-style="vm.peopleFunctions.personColor(item)" ng-click="vm.states('editing').start({subject: item})">
 		
 			<a class="block-link" ng-class="{purchased: item.get('purchased')}">
 				{{item.get('description')}}

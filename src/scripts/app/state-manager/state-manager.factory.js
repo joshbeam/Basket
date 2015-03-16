@@ -75,10 +75,10 @@
 			// pass by reference is magic
 			this.$subject = config.subject || {};
 			this.$active = false;
-			this.$model = {};
+			this.$model = '';
 			this.$exclusiveOf = [];
 			this.$auxillary = config.auxillary || {};
-			//this.$scope = config.scope || {};
+			this.$scope = {};
 		}
 		
 		function getAll() {
@@ -88,7 +88,6 @@
 		function exclusive() {
 			// try to make this cleaner
 			var stateNames = Array.prototype.slice.call(arguments);	
-			console.log('state names: ',stateNames);
 			
 			// e.g. stateNames === ['addingComments','editingDescription','assigning']
 			angular.forEach(stateNames, function(name) {
@@ -98,14 +97,12 @@
 				var current = this.states.filter(function(state) {
 					return state.$name === name;
 				})[0];
-				console.log('current: ',current);
 				
 				// create a new array of names that doesn't contain the currently looped State's name
 				// e.g. ['editingDescription','assigning']
 				var exclusiveOf = stateNames.filter(function(stateName) {
 					return stateName !== current.$name;
 				});
-				console.log('exclusiveOf: ',exclusiveOf);
 				
 				// in the currently looped State's $exclusiveOf array,
 				// push all the other State objects
@@ -114,7 +111,6 @@
 					current.$exclusiveOf.push(this.states.filter(function(state) {
 						return state.$name === stateName;
 					})[0]);
-					console.log('current.$exclusiveOf: ',current.$exclusiveOf);
 				}.bind(this));
 				
 			}.bind(this));
@@ -146,20 +142,34 @@
 			if(prop in this) return this[prop];
 		}
 		
-		function start(subject,model) {
+		function start(_config_) {
+			var config = {}, subject = {}, model = {};
+			if(!!_config_) {
+				config = _config_;
+				
+				if('subject' in config) {
+					subject = config.subject;	
+				}
+				
+				if('model' in config) {
+					model = config.model;	
+				}
+			}
+			
+			if(this.isActive()) {
+				this.model({});
+				this.stop();
+			}
 			
 			var resolvedModel = null;
 			this.$active = true;
 			// pass by reference!
-			this.$subject = subject || {};
-			
-			console.log('start called on: ',this);
-			
-			if(!!model) {
-				// initialize the model to contain the string version of the model
-				// e.g. vm.models.descriptionOfItemBeingEdited
-				this.$model = model;
+			this.$subject = subject;
+			// initialize the model to contain the string version of the model
+			// e.g. vm.models.descriptionOfItemBeingEdited
+			this.$model = model;
 
+			if(model.constructor !== Object && typeof model === 'string') {
 				resolvedModel = utils.getStringModelToModel(this, this.$scope, model);
 			}
 									
@@ -174,14 +184,14 @@
 			}
 		}
 		
-		function stop(keepCurrentSubject) {
-			console.log('stop called on: ',this);
-			
+		function stop(keepCurrentSubject) {			
 			this.$active = false;
 			this.$subject = !!keepCurrentSubject ? this.$subject : {};
 			
 			// reset the model
-			this.model('');
+			//if(this.model().constructor !== Object && typeof this.model() === 'string') {
+			this.$model = '';
+			//}
 			
 			if(this.$stop !== null) {
 				return this.$stop();
@@ -212,13 +222,17 @@
 		
 		function model(val) {
 			var resolvedModel;
-
-			// we can still pass in an empty string if we want
-			if(!!val || val === '') {
-				utils.setStringModelToModel(this, this.$scope, this.$model, val);
-			} else if (!val) {
-				return this.$model;	
-			}			
+			
+			if(typeof this.$model === 'string' && Object.keys(this.$scope).length > 0 && utils.getStringModelToModel(this, this.$scope, this.$model) !== false) {
+				// we can still pass in an empty string if we want
+				if(!!val || val === '') {
+					utils.setStringModelToModel(this, this.$scope, this.$model, val);
+				} else if (!val) {
+					return this.$model;	
+				}
+			} else {
+				return false;	
+			}
 		}
 		
 		function isActive() {
@@ -260,45 +274,52 @@
 		}
 		
 		function getStringModelToModel(thisArg, scope, string) {
-			var m, keys;
+			var m = false, keys;
 			
-			keys = string.split('.');
-			// remove ControllerAs prefix, because we don't need it
-			// the user still uses it though in the string declaration, because it creates a namespace
-			keys.shift();
+			if(typeof string === 'string') {
+				keys = string.split('.');
+				// remove ControllerAs prefix, because we don't need it
+				// the user still uses it though in the string declaration, because it creates a namespace
+				keys.shift();
+
+				angular.forEach(keys,function(key) {
+					if(!!m) {
+						m = m[key];	
+					} else {
+						m = scope[key];	
+					}
+				}.bind(thisArg));
+			}
 			
-			angular.forEach(keys,function(key) {
-				if(!!m) {
-					m = m[key];	
-				} else {
-					m = scope[key];	
-				}
-			}.bind(thisArg));
-			
-			return m;	
+			//m will end up being undefined, false, or an object
+			//if it is undefined or false, keep it false
+			//otherwise, return m
+			return !!m ? m : false;	
 		}
 		
 		function setStringModelToModel(thisArg, scope, string, val) {
 			var m, keys, lastKey;
 			
-			keys = string.split('.');
-			// remove ControllerAs prefix, because we don't need it
-			// the user still uses it though in the string declaration, because it creates a namespace
-			keys.shift();
-			
-			// get the last key
-			lastKey = keys.pop();
-			
-			angular.forEach(keys,function(key) {
-				if(!!m) {
-					m = m[key];	
-				} else {
-					m = scope[key];	
-				}
-			}.bind(thisArg));
-			
-			// set the model
-			m[lastKey] = val;		
+			if(typeof string === 'string') {
+				keys = string.split('.');
+				// remove ControllerAs prefix, because we don't need it
+				// the user still uses it though in the string declaration, because it creates a namespace
+				keys.shift();
+
+				// get the last key
+				lastKey = keys.pop();
+
+				angular.forEach(keys,function(key) {
+					if(!!m) {
+						m = m[key];	
+					} else {
+						m = scope[key];	
+					}
+				}.bind(thisArg));
+
+				// set the model
+				m[lastKey] = val;
+			}
 		}
 	}
 })();

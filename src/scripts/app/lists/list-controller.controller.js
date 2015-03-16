@@ -20,6 +20,7 @@
 		};
 		vm.items = items.populate();
 		
+		// needs to be able to restart 'addingComments' when changing
 		var editing = {
 			name: 'editing'
 		};
@@ -46,7 +47,7 @@
 			name: 'addingComments',
 			start: function(subject) {
 				var comments = subject.get('comments');
-				// set the model
+				
 				if(comments.trim() === '') {
 					this.model('');
 				} else {
@@ -112,7 +113,7 @@
 		vm.listViewContextMenu = new ContextMenu(
 			{
 				title: '+',
-				fn: "vm.states('creating').start(null,'vm.models.newItemDescription')",
+				fn: "vm.states('creating').start({model:'vm.models.newItemDescription'})",
 				extra: false,
 				classString: 'good'
 			},
@@ -145,19 +146,19 @@
 			},
 			{
 				title: 'Edit Description',
-				fn: "vm.states('editingDescription').start(vm.states('editing').subject())",
+				fn: "vm.states('editingDescription').start({subject: vm.states('editing').subject()})",
 				extra: true,
 				classString: ''
 			},
 			{
 				title: "{{vm.states('editing').subject().get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
-				fn: "vm.states('addingComments').start(vm.states('editing').subject(),'vm.models.commentsForItemBeingEdited')",
+				fn: "vm.states('addingComments').start({subject: vm.states('editing').subject(), model: 'vm.models.commentsForItemBeingEdited'})",
 				extra: true,
 				classString: ''
 			},
 			{
 				title: 'Assign to...',
-				fn: "vm.states('assigning').start(vm.states('editing').subject())",
+				fn: "vm.states('assigning').start({subject: vm.states('editing').subject()})",
 				extra: true,
 				classString: ''
 			}
