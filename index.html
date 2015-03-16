@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="src/styles/style.css" />
+	<link rel="stylesheet" href="styles/style.css">
   	<meta charset="utf-8">
 	
 <!-- 
@@ -18,7 +18,6 @@ TODO: custom prompt modal function
 TODO: remove 'all' when there are no people at all
 TODO: make creation box go away when clicking item
 TODO: fix padding on people names in mobile view
-TODO: remove jb-body directive
 -->
 	
 	<!-- prevent IE9 quirks mode -->
@@ -27,7 +26,7 @@ TODO: remove jb-body directive
 	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<title>Basket</title>
 </head>
-<body jb-body ng-app="Basket">
+<body ng-app="Basket">
 	<h1>Basket</h1>
 	<div ng-view></div>
 	<ul ng-controller="PeopleController as vm" class="unstyled inline-list">
@@ -47,32 +46,7 @@ TODO: remove jb-body directive
 		</small>
 	</footer>
 	
-	<!-- will run a build to concat and minify all of these into one js file -->
-	<script src="src/scripts/lib/jquery/jquery.js"></script>
-	<script src="src/scripts/lib/angular/angular.min.js"></script>
-	<script src="src/scripts/lib/angular/angular-route.min.js"></script>
-	
-	<script src="src/scripts/app/basket/basket.module.js"></script>
-	<script src="src/scripts/app/basket/basket.routes.js"></script>
-	<script src="src/scripts/app/helpers/color-generator.factory.js"></script>
-	<script src="src/scripts/app/helpers/shade.factory.js"></script>
-	<script src="src/scripts/app/state-manager/state-manager.factory.js"></script>
-	<script src="src/scripts/app/items/item.factory.js"></script>
-	<script src="src/scripts/app/items/items.factory.js"></script>
-	<script src="src/scripts/app/context-menu/context-menu-item.factory.js"></script>
-	<script src="src/scripts/app/context-menu/context-menu.factory.js"></script>
-	<script src="src/scripts/app/context-menu/c-menu.directive.js"></script>
-	<script src="src/scripts/app/helpers/local-store.factory.js"></script>
-	<script src="src/scripts/app/helpers/focus-when.directive.js"></script>
-	<script src="src/scripts/app/helpers/key-down.directive.js"></script>
-	<script src="src/scripts/app/lists/lists.factory.js"></script>
-	<script src="src/scripts/app/lists/list.factory.js"></script>
-	<script src="src/scripts/app/people/person.factory.js"></script>
-	<script src="src/scripts/app/people/people.factory.js"></script>
-	<script src="src/scripts/app/people/jb-body.directive.js"></script>
-	<script src="src/scripts/app/lists/list-controller.controller.js"></script>
-	<script src="src/scripts/app/lists/lists-controller.controller.js"></script>
-	<script src="src/scripts/app/people/people.controller.js"></script>
+	<script src="scripts/scripts.js"></script>
 	
 	<script type="text/ng-template" id="lists.html">
 		<h2>Shopping Lists<br><small>viewing all</small></h2>
@@ -108,50 +82,50 @@ TODO: remove jb-body directive
 			</ul>
 		</nav>
 		<ol shopping-list class="item-list">
-		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.states.get('editing').subject()}" ng-style="vm.peopleFunctions.personColor(item)" ng-click="vm.states.get('editing').start(item)">
+		<li ng-repeat="item in vm.items | filter:vm.filters.filterItems" ng-class="{selected: item === vm.states('editing').subject()}" ng-style="vm.peopleFunctions.personColor(item)" ng-click="vm.states('editing').start({subject: item})">
 		
 			<a class="block-link" ng-class="{purchased: item.get('purchased')}">
 				{{item.get('description')}}
 			</a>
 			
-			<div class="item-edit-field" ng-show="!vm.states.get('assigning').isActive() && vm.states.get('editingDescription').isActive() && item === vm.states.get('editing').subject() && !vm.states.get('addingComments').isActive()">
+			<div class="item-edit-field" ng-show="!vm.states('assigning').isActive() && vm.states('editingDescription').isActive() && item === vm.states('editing').subject() && !vm.states('addingComments').isActive()">
 				<input type="text" ng-model="vm.models.editedDescription" />
-				<button class="good" ng-click="vm.states.get('editingDescription').done()">Save</button>
-				<button class="bad" ng-click="vm.states.get('editingDescription').stop()">Cancel</button>
+				<button class="good" ng-click="vm.states('editingDescription').done()">Save</button>
+				<button class="bad" ng-click="vm.states('editingDescription').stop()">Cancel</button>
 			</div>
 			
 			<div class="item-comments" ng-show="item.get('comments').trim() !== ''">
 				{{item.get('comments')}}
 			</div>
 			
-			<div class="item-edit-field" ng-show="!vm.states.get('assigning').isActive() && vm.states.get('addingComments').isActive() && item === vm.states.get('editing').subject() && !vm.states.get('editingDescription').isActive()">
+			<div class="item-edit-field" ng-show="!vm.states('assigning').isActive() && vm.states('addingComments').isActive() && item === vm.states('editing').subject() && !vm.states('editingDescription').isActive()">
 				<textarea ng-model="vm.models.commentsForItemBeingEdited"></textarea>
 				<br>
-				<button class="good" ng-click="vm.states.get('addingComments').done()">Save</button>
-				<button class="warning" ng-click="vm.states.get('addingComments').done(['remove'])" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
-				<button class="bad" ng-click="vm.states.get('addingComments').stop()">Cancel</button>
+				<button class="good" ng-click="vm.states('addingComments').done()">Save</button>
+				<button class="warning" ng-click="vm.states('addingComments').done(true).and('remove')" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
+				<button class="bad" ng-click="vm.states('addingComments').stop()">Cancel</button>
 			</div>
 			
-			<div class="item-edit-field" ng-show="vm.states.get('assigning').isActive() && !vm.states.get('addingComments').isActive() && item === vm.states.get('editing').subject() && !vm.states.get('editingDescription').isActive()">
+			<div class="item-edit-field" ng-show="vm.states('assigning').isActive() && !vm.states('addingComments').isActive() && item === vm.states('editing').subject() && !vm.states('editingDescription').isActive()">
 				<label for="{{item.description}}-assignTo-{{person.name}}" ng-repeat="person in vm.people"><input type="radio" ng-model="vm.models.assignedTo" value="{{person.name}}" ng-checked="{{item.person === person.name}}" id="{{item.description}}-assignTo-{{person.name}}" />{{person.name}} </label>
 				<div class="button-group">
-					<button class="good" ng-click="vm.states.get('assigning').done()">Assign</button>
-					<button class="bad" ng-click="vm.states.get('assigning').stop()">Cancel</button>
+					<button class="good" ng-click="vm.states('assigning').done()">Assign</button>
+					<button class="bad" ng-click="vm.states('assigning').stop()">Cancel</button>
 				</div>
 			</div>
 		</li>
 		</ol>   
-		<div class="create-box" ng-show="vm.states.get('creating').isActive() && !vm.states.get('editing').isActive()">
-			<input type="text" ng-model="vm.models.newItemDescription" key-down="vm.states.get('creating').done()" focus-when="[vm.states.get('creating').isActive(), !vm.states.get('editing').isActive()]" />
-			<button class="good" ng-click="vm.states.get('creating').done()">Add</button>
-			<button class="bad" ng-click="vm.states.get('creating').stop()">Cancel</button>
+		<div class="create-box" ng-show="vm.states('creating').isActive() && !vm.states('editing').isActive()">
+			<input type="text" ng-model="vm.models.newItemDescription" key-down="vm.states('creating').done()" focus-when="[vm.states('creating').isActive(), !vm.states('editing').isActive()]" />
+			<button class="good" ng-click="vm.states('creating').done()">Add</button>
+			<button class="bad" ng-click="vm.states('creating').stop()">Cancel</button>
 		</div>
 		
 		
 		
-		<ul c-menu="vm.listViewContextMenu" ng-show="!vm.states.get('creating').isActive() && !vm.states.get('editing').isActive()"></ul>
+		<ul c-menu="vm.listViewContextMenu" ng-show="!vm.states('creating').isActive() && !vm.states('editing').isActive()"></ul>
 		
-		<ul c-menu="vm.itemViewContextMenu" ng-show="vm.states.get('editing').isActive()"></ul>
+		<ul c-menu="vm.itemViewContextMenu" ng-show="vm.states('editing').isActive()"></ul>
 	</script>	
 </body>
 </html>
