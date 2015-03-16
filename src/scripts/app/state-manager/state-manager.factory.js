@@ -11,7 +11,7 @@
 		};
 		
 		StateGroup.prototype = {
-			get: stateGroupGet,
+			getAll: getAll,
 			exclusive: exclusive
 		};
 		
@@ -34,6 +34,30 @@
 			angular.forEach(arguments,function(state) {
 				this.states.push(new State(state));
 			}.bind(this));
+			
+			/*
+				usage:
+				
+				vm.states = new stateManager.StateGroup(...);
+				// ==> instantiates a new StateGroup
+				// ==> returns a function
+				
+				vm.states()
+				// ==> returns the StateGroup object
+				// ==> gives access to the prototype e.g. vm.states().getAll(...)
+				
+				vm.states('stateName');
+				// ==> returns the state with the specified name
+			*/
+			return function(stateName) {
+				if(!!stateName) {
+					return this.states.filter(function(state) {
+						return state.$name === stateName;
+					})[0];	
+				} else {
+					return this;
+				}
+			}.bind(this);
 		}
 		
 		function State(config) {
@@ -49,16 +73,8 @@
 			this.$auxillary = config.auxillary || {};
 		}
 		
-		function stateGroupGet(stateName) {
-			if(!stateName) {
-				return this.states;	
-			} else {
-				return this.states.filter(filter)[0];
-			}
-			
-			function filter(state) {
-				return state.$name === stateName;	
-			}
+		function getAll() {
+			return this.states;	
 		}
 		
 		function exclusive() {

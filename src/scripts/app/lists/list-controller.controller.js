@@ -63,8 +63,7 @@
 				subject.set('comments',vm.models.commentsForItemBeingEdited);
 			},
 			auxillary: {
-				remove: function(subject,test) {
-					console.log(test);
+				remove: function(subject) {
 					subject.set('comments','');	
 				}
 			}
@@ -92,8 +91,8 @@
 		// etc...
 		vm.states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);
 		
-		vm.states.exclusive('addingComments','editingDescription','assigning');
-		vm.states.exclusive('editing','creating');
+		vm.states().exclusive('addingComments','editingDescription','assigning');
+		vm.states().exclusive('editing','creating');
 				
 		vm.models = {
 			commentsForItemBeingEdited: '',
@@ -115,7 +114,7 @@
 		vm.listViewContextMenu = new ContextMenu(
 			{
 				title: '+',
-				fn: "vm.states.get('creating').start()",
+				fn: "vm.states('creating').start()",
 				extra: false,
 				classString: 'good'
 			},
@@ -136,31 +135,31 @@
 		vm.itemViewContextMenu = new ContextMenu(
 			{
 				title: '&laquo;',
-				fn: "vm.states.get('editing').stop()",
+				fn: "vm.states('editing').stop()",
 				extra: false,
 				classString: ''
 			},
 			{
-				title: "Mark as {{vm.states.get('editing').subject().get('purchased') === false ? 'purchased' : 'not purchased'}}",
+				title: "Mark as {{vm.states('editing').subject().get('purchased') === false ? 'purchased' : 'not purchased'}}",
 				fn: 'vm.itemFunctions.togglePurchased',
 				extra: false,
 				classString: ''
 			},
 			{
 				title: 'Edit Description',
-				fn: "vm.states.get('editingDescription').start(vm.states.get('editing').subject())",
+				fn: "vm.states('editingDescription').start(vm.states('editing').subject())",
 				extra: true,
 				classString: ''
 			},
 			{
-				title: "{{vm.states.get('editing').subject().get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
-				fn: "vm.states.get('addingComments').start(vm.states.get('editing').subject(),vm.models.commentsForItemBeingEdited)",
+				title: "{{vm.states('editing').subject().get('comments').trim() === '' ? 'Add' : 'Edit'}} comments",
+				fn: "vm.states('addingComments').start(vm.states('editing').subject(),vm.models.commentsForItemBeingEdited)",
 				extra: true,
 				classString: ''
 			},
 			{
 				title: 'Assign to...',
-				fn: "vm.states.get('assigning').start(vm.states.get('editing').subject())",
+				fn: "vm.states('assigning').start(vm.states('editing').subject())",
 				extra: true,
 				classString: ''
 			}
@@ -173,7 +172,7 @@
 		}
 		
 		function togglePurchased() {
-			var item = vm.states.get('editing').subject(),
+			var item = vm.states('editing').subject(),
 				purchased = item.get('purchased');
 			
 			item.set('purchased',!purchased);
