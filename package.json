@@ -1,6 +1,6 @@
 {
   "name": "Basket",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "AngularJS shopping list app",
   "main": "index.html",
   "dependencies": {
@@ -16,6 +16,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Josh Beam",
   "license": "MIT"
 }
