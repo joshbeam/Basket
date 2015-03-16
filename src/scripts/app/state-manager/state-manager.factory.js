@@ -54,10 +54,10 @@
 				return this.states;	
 			} else {
 				return this.states.filter(filter)[0];
-				
-				function filter(state) {
-					return state.$name === stateName;	
-				}
+			}
+			
+			function filter(state) {
+				return state.$name === stateName;	
 			}
 		}
 		

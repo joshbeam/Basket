@@ -24,7 +24,7 @@
 		
 		function create() {
 			if(vm.newListName.trim() === '') {
-				return; 	
+				return;	
 			}
 			
 			lists.add({

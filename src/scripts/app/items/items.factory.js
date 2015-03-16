@@ -56,7 +56,7 @@
 		}
 
 		function clearPurchased() {			
-			/* 	must use splice to live update the controller
+			/*	must use splice to live update the controller
 			
 				this won't work:
 					list = list.filter(function(item) {

@@ -30,7 +30,7 @@
 				var description = vm.models.newItemDescription;
 
 				if(description.trim() === '') {
-					return; 	
+					return;	
 				}
 
 				items.add({
@@ -50,7 +50,6 @@
 		var addingComments = {
 			name: 'addingComments',
 			start: function(subject,model) {
-				console.log(model);
 				var comments = subject.get('comments');
 
 				if(comments.trim() === '') {
@@ -99,7 +98,7 @@
 			editedDescription: '',
 			assignedTo: '',
 			newItemDescription: ''
-		}
+		};
 
 		vm.itemFunctions = {
 			togglePurchased: togglePurchased,
@@ -109,7 +108,7 @@
 		
 		vm.peopleFunctions = {
 			personColor: personColor	
-		}
+		};
 		
 		vm.listViewContextMenu = new ContextMenu(
 			{
@@ -183,7 +182,7 @@
 		}
 		
 		function removeList() {
-			if(confirm("Do you want to delete this entire shopping list?")) {
+			if(window.confirm("Do you want to delete this entire shopping list?")) {
 				//remove the list and save the array back to localStorage
 				lists.remove(vm.listName);
 				items.remove(vm.listName);
@@ -205,7 +204,7 @@
 				
 				if(item.person === vm.personName) {
 					return {
-						'background-color': shade(color,.75)
+						'background-color': shade(color,0.75)
 					};
 				} else {
 					return '';	

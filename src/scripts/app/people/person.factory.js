@@ -1,5 +1,5 @@
 (function() {
-	'use strict'
+	'use strict';
 	
 	angular.module('Basket')
 		.factory('Person',Person);
@@ -8,7 +8,7 @@
 		Service.prototype = {
 			get: get,
 			set: set
-		}
+		};
 		
 		function Service(config) {
 			this.name = config.name;

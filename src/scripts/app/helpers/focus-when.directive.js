@@ -14,7 +14,7 @@
 		var d = {
 			restrict: 'A',
 			link: link
-		}
+		};
 			
 		return d;
 		
@@ -27,14 +27,14 @@
 
 				if(attrs.focusWhen.constructor === Array) {
 					angular.forEach(attrs.focusWhen,forEachFn);
-					
-					function forEachFn(b) {
-						if(b === false) {
-							bool = false;	
-						}						
-					}
 				} else {
 					bool = newVal;
+				}
+				
+				function forEachFn(b) {
+					if(b === false) {
+						bool = false;	
+					}						
 				}
 				
 				$timeout(timeout);
