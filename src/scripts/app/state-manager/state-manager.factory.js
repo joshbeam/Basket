@@ -12,7 +12,8 @@
 		
 		StateGroup.prototype = {
 			getAll: getAll,
-			exclusive: exclusive
+			exclusive: exclusive,
+			scope: scope
 		};
 		
 		State.prototype = {
@@ -106,6 +107,12 @@
 				}.bind(this));
 				
 			}.bind(this));
+		}
+		
+		function scope(_scope_) {
+			var scope = _scope_;
+			
+			console.log(scope);
 		}
 		
 		function stateGet(prop) {
