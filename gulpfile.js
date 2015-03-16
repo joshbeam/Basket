@@ -26,7 +26,7 @@ gulp.task('scripts',function() {
 gulp.task('html',function() {
 	return gulp.src('index.html')
 		.pipe(htmlreplace({
-			'js':'scripts/scripts.js',
+			'js':'scripts/scripts.min.js',
 			'css':'styles/style.css'
 		}))
 		.pipe(gulp.dest('dist'));
