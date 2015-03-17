@@ -28034,7 +28034,7 @@ angular.module('Basket')
 		};
 		
 		function add(_name_) {
-			var name = _name_ || window.prompt('Name of person: ',''),
+			var name = _name_ || window.prompt('Name of person: ','Name of person'),
 				exists;
 						
 			if(name && name.trim() !== '') {
@@ -28045,7 +28045,7 @@ angular.module('Basket')
 			}
 			
 			if(exists === true) {
-				name = window.prompt('Person already exists! Choose another name: ','');
+				name = window.prompt('Person already exists! Choose another name: ','Name of person');
 				return add(name);
 			}
 		}
