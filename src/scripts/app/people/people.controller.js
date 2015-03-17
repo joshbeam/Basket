@@ -58,7 +58,7 @@
 		};
 		
 		function add(_name_) {
-			var name = _name_ || window.prompt('Name of person: ','Name of person'),
+			var name = _name_ || window.prompt('Name of person: ',''),
 				exists;
 						
 			if(name && name.trim() !== '') {
@@ -69,7 +69,7 @@
 			}
 			
 			if(exists === true) {
-				name = window.prompt('Person already exists! Choose another name: ','Name of person');
+				name = window.prompt('Person already exists! Choose another name: ','');
 				return add(name);
 			}
 		}
