@@ -1,5 +1,5 @@
 describe('factory: stateManager', function() {
-	var editing, creating, addingComments, editingDescription, assigning, states;
+	var stateManager, editing, creating, addingComments, editingDescription, assigning, states;
 	
 	beforeEach(module('Basket'));
 	
@@ -33,7 +33,14 @@ describe('factory: stateManager', function() {
 			name: 'assigning'
 		};
 		
-		states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);		
+		states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);	
+		
+//		var editingState = states('editing');
+//		var creatingState = states('creating');
+//		var addingCommentsState = states('addingComments');
+//		var editingDescriptionState = states('editingDescription');
+//		var assigningState = states('assigning');
+//		console.log(editingState,creatingState,addingCommentsState,editingDescriptionState,assigningState);
 	});
 	
 	it('should return a named state', function() {
@@ -55,8 +62,14 @@ describe('factory: stateManager', function() {
 		var editingDescriptionState = states('editingDescription');
 		var assigningState = states('assigning');
 		
-		states().exclusive('editing','creating');
-		states().exclusive('addingComments','editingDescription','assigning');
+		states().config(function() {
+			var group1 = ['editing','creating'];
+			var group2 = ['addingComments','editingDescription','assigning'];
+			
+			return {
+				exclusive: [group1,group2]
+			};
+		});
 		
 		expect(editingState.$exclusiveOf.length).toBe(1);
 		expect(editingState.$exclusiveOf[0].$name).toBe('creating');
@@ -74,8 +87,14 @@ describe('factory: stateManager', function() {
 		var addingCommentsState = states('addingComments');
 		var editingDescriptionState = states('editingDescription');
 		var assigningState = states('assigning');
-		
-		states().exclusive('addingComments','editingDescription','assigning');
+				
+		states().config(function() {
+			var group = ['addingComments','editingDescription','assigning'];
+			
+			return {
+				exclusive: group
+			};
+		});
 		
 		addingCommentsState.start();
 		editingDescriptionState.start();
@@ -88,8 +107,12 @@ describe('factory: stateManager', function() {
 		var editingState = states('editing');
 		var creatingState = states('creating');
 		
-		states().scope({
-			name: 'testScope'
+		states().config(function() {
+			return {
+				scope: {
+					name: 'testScope'	
+				}
+			};
 		});
 		
 		expect(editingState.$scope).toBe(states().$scope);
@@ -101,13 +124,17 @@ describe('factory: stateManager', function() {
 		var creatingState = states('creating');
 		
 		// vm
-		states().scope({
-			name: 'testScope',
-			models: {
-				helloWorld: function() {
-					return 'hello world!';	
+		states().config(function() {
+			return {
+				scope: {
+					name: 'testScope',
+					models: {
+						helloWorld: function() {
+							return 'hello world!';	
+						}
+					}					
 				}
-			}
+			};
 		});
 		
 		editingState.start({model: 'vm.models.helloWorld'});
@@ -118,7 +145,7 @@ describe('factory: stateManager', function() {
 		
 	});
 	
-	it('should not run .model() unless there is a $model string, valid $scope, and a valid $scope model object',function() {
+	it('should not run .model() unless there is a $model string and valid $scope',function() {
 		var editingState = states('editing');
 		
 		editingState.start();
@@ -127,36 +154,48 @@ describe('factory: stateManager', function() {
 		editingState.start({model: 'vm.models.helloWorld'});
 		expect(editingState.model('')).toBe(false);
 		
-		states().scope({
-			name: 'testScope'
-		});
-		
-		editingState.start({model: 'vm.models.helloWorld'});
-		expect(editingState.model('')).toBe(false);
-		
-		states().scope({
-			name: 'testScope',
-			models: {
-				helloWorld: function() {
-					return 'hello world!';	
+		states().config(function() {
+			return {
+				scope: {
+					name: 'testScope'	
 				}
-			}			
+			};
 		});
 		
 		editingState.start({model: 'vm.models.helloWorld'});
-		expect(editingState.model('')).not.toBe(false);
+		expect(editingState.model('')).toBe(true);
+		
+		states().config(function() {
+			return {
+				scope: {
+					name: 'testScope',
+					models: {
+						helloWorld: function() {
+							return 'hello world!';	
+						}
+					}					
+				}
+			};
+		});
+		
+		editingState.start({model: 'vm.models.helloWorld'});
+		expect(editingState.model('')).toBe(true);
 	});
 	
 	it('should stop a state and reset the state\'s model before the state starts again',function() {
 		var editingState = states('editing');
-		
-		states().scope({
-			name: 'testScope',
-			models: {
-				helloWorld: function() {
-					return 'hello world!';	
+
+		states().config(function() {
+			return {
+				scope: {
+					name: 'testScope',
+					models: {
+						helloWorld: function() {
+							return 'hello world!';	
+						}
+					}					
 				}
-			}			
+			};
 		});
 		
 		editingState.start({model: 'vm.models.helloWorld'});
@@ -164,5 +203,41 @@ describe('factory: stateManager', function() {
 		
 		expect(editingState.$model.constructor).toBe(Object);
 	});
+	
+	it('should return a list of models',function() {
+		var editingState = states('editing');
+		var creatingState = states('creating');
+		var addingCommentsState = states('addingComments');
+		var editingDescriptionState = states('editingDescription');
+		var assigningState = states('assigning');
+		
+		states().config(function() {
+			return {
+				scope: {
+					name: 'testScope',
+					models: {
+						helloWorld: function() {
+							return 'hello world!';
+						},
+						foo: 'bar',
+						dude: 'where\'s my car'
+					}						
+				}
+			};
+		});
+		
+		editingState.start({model: 'vm.models.helloWorld'});
+		creatingState.start({model: 'vm.models.foo'});
+		editingDescriptionState.start({model: 'vm.models.foo'});
+		assigningState.start({model: 'vm.models.dude'});
+		addingCommentsState.start({model: 'vm.models.helloWorld'});
+		
+		expect(states().models().length).toBe(5);
+		expect(states().models()).toContain('vm.models.helloWorld');
+		expect(states().models()).toContain('vm.models.foo');
+		expect(states().models()).toContain('vm.models.dude');
+	});
+	
+	//if states are not exclusive, they cannot have the same model!
 	
 });

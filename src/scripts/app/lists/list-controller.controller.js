@@ -55,8 +55,9 @@
 				}
 			},
 			// should probably use an object of parameters instead
-			done: function(subject) {
-				subject.set('comments',vm.models.commentsForItemBeingEdited);
+			done: function(subject,model) {
+				//subject.set('comments',vm.models.commentsForItemBeingEdited);
+				subject.set('comments',model);
 			},
 			auxillary: {
 				remove: function(subject) {
@@ -68,37 +69,44 @@
 		var editingDescription = {
 			name: 'editingDescription',
 			done: function(subject,model) {
-				subject.set('description',vm.models.editedDescription);
+//				subject.set('description',vm.models.editedDescription);
+				subject.set('description',model);
 			}
 		};
 		
 		// need to be able to remove currently assigned person
 		var assigning = {
 			name: 'assigning',
-			done: function(subject) {
-				subject.set('person',vm.models.assignedTo);
+			done: function(subject,model) {
+//				subject.set('person',vm.models.assignedTo);
+				subject.set('person',model);
 
 				// change path to newly assigned person to see all their items
-				$location.path('/list/'+vm.listName+'/'+vm.models.assignedTo);
+				$location.path('/list/'+vm.listName+'/'+model);
 			}
 		};		
 		
 		// maybe try to be able to use this syntax: vm.states('editing').subject()
 		// etc...
 		vm.states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);
-		
-		// need to be able to group these in a config method
-		vm.states().exclusive('addingComments','editingDescription','assigning');
-		vm.states().exclusive('editing','creating');
-		vm.states().scope(this);
-		
+
+		vm.states().config(function() {
+			var group1 = ['addingComments','editingDescription','assigning'],
+				group2 = ['editing','creating'],
+				config = {
+					exclusive: [group1,group2],
+					scope: vm
+				};
+			
+			return config;
+		});
 				
-		vm.models = {
-			commentsForItemBeingEdited: '',
-			editedDescription: '',
-			assignedTo: '',
-			newItemDescription: ''
-		};
+//		vm.models = {
+//			commentsForItemBeingEdited: '',
+//			editedDescription: '',
+//			assignedTo: '',
+//			newItemDescription: ''
+//		};
 
 		vm.itemFunctions = {
 			togglePurchased: togglePurchased,
@@ -146,7 +154,7 @@
 			},
 			{
 				title: 'Edit Description',
-				fn: "vm.states('editingDescription').start({subject: vm.states('editing').subject()})",
+				fn: "vm.states('editingDescription').start({subject: vm.states('editing').subject(), model: 'vm.models.editedDescription'})",
 				extra: true,
 				classString: ''
 			},
@@ -158,7 +166,7 @@
 			},
 			{
 				title: 'Assign to...',
-				fn: "vm.states('assigning').start({subject: vm.states('editing').subject()})",
+				fn: "vm.states('assigning').start({subject: vm.states('editing').subject(), model: 'vm.models.assignedTo'})",
 				extra: true,
 				classString: ''
 			}
