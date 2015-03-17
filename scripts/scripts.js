@@ -27452,32 +27452,93 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 			}
 		}
 		
-		function stop(keepCurrentSubject) {
+		function stop(config) {
 			/*jshint validthis: true */
+			/*
+				config: 
+				
+					{
+						keepSubject: {true} | {false} [default: false]
+					}
+			*/
 			this.$active = false;
-			this.$subject = !!keepCurrentSubject ? this.$subject : {};
+			
+			// config is always passed in by default (from the .done() method)
+			// still use error checking just in case
+			if(!!config) {
+				if('keepSubject' in config) {
+					this.$subject = config.keepSubject === true ? this.$subject : {};
+				}
+			}
 			
 			// reset the model
-			//if(this.model().constructor !== Object && typeof this.model() === 'string') {
+			this.model('');
 			this.$model = '';
-			//}
 			
 			if(this.$stop !== null) {
 				return this.$stop();
 			}
 		}
 		
-		function done(keepCurrentSubject) {
+		function done(config) {
 			/*jshint validthis: true */
+			/*
+				config:
+				
+					{
+						keepSubject: {true} | {false} [default: false]
+						stop: {true} | {false} [default: true]
+						keepModel: {true} | {false} [default: false]
+					}
+			*/
+			var keepSubject = false, keepModel = false, runStop = true;
+			
+			if(!!config) {
+				if('keepSubject' in config) {
+					if(typeof config.keepSubject === 'boolean') {
+						keepSubject = config.keepSubject;
+					} else {
+						throw new TypeError('keepSubject must contain a boolean value');
+					}
+				}
+				
+				if('stop' in config) {
+					if(typeof config.stop === 'boolean') {
+						runStop = config.stop;
+					} else {
+						throw new TypeError('stop must contain a boolean value');	
+					}
+				}
+				
+				if('keepModel' in config) {
+					if(typeof config.keepModel === 'boolean') {
+						keepModel = config.keepModel;
+					} else {
+						throw new TypeError('keepModel must contain a boolean value');	
+					}
+				}
+			}
+						
 			// need to re-resolve the model to see the updates from the scope
 			var resolvedModel = utils.getStringModelToModel(this, this.$scope, this.$model);
+			
 			if(this.$done !== null) {
 				this.$done(this.$subject,resolvedModel);
 			}
 			
+			// [default]
+			if(keepModel === false) {
+				this.model('');
+			}
+			
 			// this *has* to be called second, since it can reset the subject
 			// if keepCurrentSubject is not passed in
-			this.stop(keepCurrentSubject);
+			// [default]
+			if(runStop === true) {
+				this.stop({
+					keepSubject: keepSubject
+				});
+			}
 			
 			return this;
 		}
@@ -27574,11 +27635,16 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 		function setStringModelToModel(scope, string, val) {
 			var m = scope, keys, prevObject;
 			
+			// has to start with $scope.models, or vm.models, or whatever
+			
 			if(typeof string === 'string') {
 				keys = string.split('.');
 				// remove ControllerAs prefix, because we don't need it
 				// the user still uses it though in the string declaration, because it creates a namespace
 				keys.shift();
+				if(keys.length <2) {
+					throw new SyntaxError('A model should be prefixed with [scope].models');	
+				}
 
 				for(var i = 0; i<keys.length; i++) {
 					if(i === 0) {
@@ -27914,9 +27980,9 @@ angular.module('Basket')
 	angular.module('Basket')
 		.controller('PeopleController',PeopleController);
 	
-	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade'];
+	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade','stateManager'];
 	
-	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade) {
+	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade,stateManager) {
 		var vm = this;
 		
 		$scope.$watch(function() {
@@ -27939,20 +28005,32 @@ angular.module('Basket')
 		// in order to update the counts returned by numberOfItems
 		vm.items = items.populate();
 		
+		vm.states = new stateManager.StateGroup({
+			name: 'options',
+			auxillary: {
+				remove: function(subject) {
+					//if we're currently viewing a list...
+					if(!!vm.listName) {
+						$location.path('/list/'+vm.listName);
+					}
+
+					people.remove(subject.name);						
+				}
+			}
+		});
+		
+		vm.states().config(function() {
+			return {
+				scope: vm	
+			};
+		});
+		
 		vm.people = people.populate();
 		vm.shade = shade;
-		vm.showingPersonOptions = false;
-		// wonder if I should change the structure of this...
-		// maybe use a filter instead and pass in the person as a param?
-		vm.personWithOptionsShowing = '';
 		vm.peopleFunctions = {
 			add: add,
 			href: href,
 			numberOfItems: numberOfItems,
-			showPersonOptions: showPersonOptions,
-			// should i make this function a part of "showPersonOptions" by param?
-			stopShowingPersonOptions: stopShowingPersonOptions,
-			removePerson: removePerson
 		};
 		
 		function add(_name_) {
@@ -27998,25 +28076,6 @@ angular.module('Basket')
 			} else {
 				return '';	
 			}			
-		}
-		
-		function showPersonOptions(person) {
-			vm.showingPersonOptions = true;
-			vm.personWithOptionsShowing = person;
-		}
-		
-		function stopShowingPersonOptions() {
-			vm.showingPersonOptions = false;
-			vm.personWithOptionsShowing = '';
-		}
-		
-		function removePerson() {
-			//if we're currently viewing a list...
-			if(!!vm.listName) {
-				$location.path('/list/'+vm.listName);
-			}
-			
-			people.remove(vm.personWithOptionsShowing.name);	
 		}
 	}
 })();
@@ -28548,39 +28607,58 @@ angular.module('Basket')
 	angular.module('Basket')
 		.controller('ListsController', ListsController);
 	
-	ListsController.$inject = ['lists'];
+	ListsController.$inject = ['lists','stateManager'];
 	
-	function ListsController(lists) {
+	function ListsController(lists,stateManager) {
 		var vm = this;
 		
-		vm.lists = lists.populate();
-		vm.newListName = '';
-		vm.creatingNewList = false;
-		vm.listsFunctions = {
-			startCreating: startCreating,
-			create: create,
-			cancel: cancel
-		};
-		
-		function startCreating() {
-			vm.creatingNewList = true;	
-		}
-		
-		function create() {
-			if(vm.newListName.trim() === '') {
-				return;	
+		vm.states = new stateManager.StateGroup({
+			name: 'creating',
+			done: function(subject,model) {
+				if(model.trim() !== '') {
+					lists.add({
+						name: model
+					});
+				}
 			}
-			
-			lists.add({
-				name: vm.newListName
-			});
-			
-			vm.newListName = '';
-		}
+		});
 		
-		function cancel() {
-			vm.creatingNewList = false;	
-		}
+		vm.states().config(function() {
+			var config = {
+				scope: vm	
+			};
+			
+			return config;
+		});
+		
+		vm.lists = lists.populate();
+//		vm.newListName = '';
+//		vm.creatingNewList = false;
+//		vm.listsFunctions = {
+//			startCreating: startCreating,
+//			create: create,
+//			cancel: cancel
+//		};
+//		
+//		function startCreating() {
+//			vm.creatingNewList = true;	
+//		}
+//		
+//		function create() {
+//			if(vm.newListName.trim() === '') {
+//				return;	
+//			}
+//			
+//			lists.add({
+//				name: vm.newListName
+//			});
+//			
+//			vm.newListName = '';
+//		}
+//		
+//		function cancel() {
+//			vm.creatingNewList = false;	
+//		}
 	}
 })();
 (function() {
