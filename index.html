@@ -30,8 +30,8 @@ TODO: fix padding on people names in mobile view
 </head>
 <body ng-app="Basket">
 	<h1>Basket</h1>
-	<div ng-view></div>
-	<ul ng-controller="PeopleController as vm" class="unstyled inline-list">
+	<div ng-view ng-cloak></div>
+	<ul ng-controller="PeopleController as vm" class="unstyled inline-list" ng-cloak>
 		<li><h5>People: </h5></li>
 		<li ng-show="vm.listName !== null; vm.people.length > 0">
 			<button ng-click="vm.peopleFunctions.href(); vm.peopleFunctions.stopShowingPersonOptions()">all</button>

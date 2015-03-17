@@ -19,6 +19,10 @@ $dark-gray: #777;
 $yellow: #e6c64c;
 $gray-blue: #a59cfb;
 
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
 body, html {
   margin: 0;
   padding: 1em;
