@@ -4,9 +4,9 @@
 	angular.module('Basket')
 		.controller('PeopleController',PeopleController);
 	
-	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade'];
+	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade','stateManager'];
 	
-	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade) {
+	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade,stateManager) {
 		var vm = this;
 		
 		$scope.$watch(function() {
@@ -29,20 +29,32 @@
 		// in order to update the counts returned by numberOfItems
 		vm.items = items.populate();
 		
+		vm.states = new stateManager.StateGroup({
+			name: 'options',
+			auxillary: {
+				remove: function(subject) {
+					//if we're currently viewing a list...
+					if(!!vm.listName) {
+						$location.path('/list/'+vm.listName);
+					}
+
+					people.remove(subject.name);						
+				}
+			}
+		});
+		
+		vm.states().config(function() {
+			return {
+				scope: vm	
+			};
+		});
+		
 		vm.people = people.populate();
 		vm.shade = shade;
-		vm.showingPersonOptions = false;
-		// wonder if I should change the structure of this...
-		// maybe use a filter instead and pass in the person as a param?
-		vm.personWithOptionsShowing = '';
 		vm.peopleFunctions = {
 			add: add,
 			href: href,
 			numberOfItems: numberOfItems,
-			showPersonOptions: showPersonOptions,
-			// should i make this function a part of "showPersonOptions" by param?
-			stopShowingPersonOptions: stopShowingPersonOptions,
-			removePerson: removePerson
 		};
 		
 		function add(_name_) {
@@ -88,25 +100,6 @@
 			} else {
 				return '';	
 			}			
-		}
-		
-		function showPersonOptions(person) {
-			vm.showingPersonOptions = true;
-			vm.personWithOptionsShowing = person;
-		}
-		
-		function stopShowingPersonOptions() {
-			vm.showingPersonOptions = false;
-			vm.personWithOptionsShowing = '';
-		}
-		
-		function removePerson() {
-			//if we're currently viewing a list...
-			if(!!vm.listName) {
-				$location.path('/list/'+vm.listName);
-			}
-			
-			people.remove(vm.personWithOptionsShowing.name);	
 		}
 	}
 })();
