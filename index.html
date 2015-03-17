@@ -129,7 +129,7 @@ TODO: fix padding on people names in mobile view
 				<textarea ng-model="vm.models.commentsForItemBeingEdited"></textarea>
 				<br>
 				<button class="good" ng-click="vm.states('addingComments').done()">Save</button>
-				<button class="warning" ng-click="vm.states('addingComments').done(true).and('remove')" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
+				<button class="warning" ng-click="vm.states('addingComments').done({keepSubject: true}).and('remove')" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
 				<button class="bad" ng-click="vm.states('addingComments').stop()">Cancel</button>
 			</div>
 			
@@ -143,8 +143,8 @@ TODO: fix padding on people names in mobile view
 		</li>
 		</ol>   
 		<div class="create-box" ng-show="vm.states('creating').isActive() && !vm.states('editing').isActive()">
-			<input type="text" ng-model="vm.models.newItemDescription" key-down="vm.states('creating').done()" focus-when="[vm.states('creating').isActive(), !vm.states('editing').isActive()]" />
-			<button class="good" ng-click="vm.states('creating').done()">Add</button>
+			<input type="text" ng-model="vm.models.newItemDescription" key-down="vm.states('creating').done({stop: false})" focus-when="[vm.states('creating').isActive(), !vm.states('editing').isActive()]" />
+			<button class="good" ng-click="vm.states('creating').done({stop: false})">Add</button>
 			<button class="bad" ng-click="vm.states('creating').stop()">Cancel</button>
 		</div>
 		
