@@ -32,10 +32,10 @@ TODO: fix padding on people names in mobile view
 	<ul ng-controller="PeopleController as vm" class="unstyled inline-list" ng-cloak>
 		<li><h5>People: </h5></li>
 		<li ng-show="vm.listName !== null; vm.people.length > 0">
-			<button ng-click="vm.peopleFunctions.href(); vm.peopleFunctions.stopShowingPersonOptions()">all</button>
+			<button ng-click="vm.peopleFunctions.href(); vm.states('options').stop()">all</button>
 		</li>
-		<li person ng-click="vm.peopleFunctions.href(person); vm.peopleFunctions.showPersonOptions(person)" class="person" ng-style="{'background-color': '{{vm.shade(person.color, .75)}}', border: '1px solid {{person.color}}'}" ng-repeat="person in vm.people">
-			<button class="bad" ng-click="vm.peopleFunctions.removePerson()" ng-show="vm.showingPersonOptions && person === vm.personWithOptionsShowing">Delete</button>
+		<li person ng-click="vm.peopleFunctions.href(person); vm.states('options').start({subject: person})" class="person" ng-style="{'background-color': '{{vm.shade(person.color, .75)}}', border: '1px solid {{person.color}}'}" ng-repeat="person in vm.people">
+			<button class="bad" ng-click="vm.states('options').done({keepSubject: true}).and('remove')" ng-show="vm.states('options').isActive() && person === vm.states('options').subject()">Delete</button>
 			{{person.name}} {{vm.peopleFunctions.numberOfItems(person)}}
 		</li>
 		<li><button ng-click="vm.peopleFunctions.add()">Add a Person</button></li>
@@ -61,15 +61,15 @@ TODO: fix padding on people names in mobile view
 			Looks like you don't have any shopping lists! Why don't you create one?
 		</div>
 		
-		<div class="create-box" ng-show="vm.creatingNewList">
-			<input type="text" ng-model="vm.newListName" key-down="vm.listsFunctions.create()" focus-when="vm.creatingNewList" />
-			<button class="good" ng-click="vm.listsFunctions.create()">+</button>
-			<button class="bad" ng-click="vm.listsFunctions.cancel()">Cancel</button>		
+		<div class="create-box" ng-show="vm.states('creating').isActive()">
+			<input type="text" ng-model="vm.models.newListName" key-down="vm.states('creating').done({stop: false})" focus-when="vm.states('creating').isActive()" />
+			<button class="good" ng-click="vm.states('creating').done({stop: false})">+</button>
+			<button class="bad" ng-click="vm.states('creating').stop()">Cancel</button>		
 		</div>
 		
 		<ul class="unstyled inline-list">
 			<li>
-				<button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
+				<button class="good" ng-show="!vm.states('creating').isActive()" ng-click="vm.states('creating').start({model: 'vm.models.newListName'})">+</button>
 			</li>
 		</ul>
 	</script>
@@ -102,7 +102,7 @@ TODO: fix padding on people names in mobile view
 				<textarea ng-model="vm.models.commentsForItemBeingEdited"></textarea>
 				<br>
 				<button class="good" ng-click="vm.states('addingComments').done()">Save</button>
-				<button class="warning" ng-click="vm.states('addingComments').done(true).and('remove')" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
+				<button class="warning" ng-click="vm.states('addingComments').done({keepSubject: true}).and('remove')" ng-show="vm.itemBeingEdited.get('comments').trim() !== ''">Remove Comments</button>
 				<button class="bad" ng-click="vm.states('addingComments').stop()">Cancel</button>
 			</div>
 			
@@ -116,8 +116,8 @@ TODO: fix padding on people names in mobile view
 		</li>
 		</ol>   
 		<div class="create-box" ng-show="vm.states('creating').isActive() && !vm.states('editing').isActive()">
-			<input type="text" ng-model="vm.models.newItemDescription" key-down="vm.states('creating').done()" focus-when="[vm.states('creating').isActive(), !vm.states('editing').isActive()]" />
-			<button class="good" ng-click="vm.states('creating').done()">Add</button>
+			<input type="text" ng-model="vm.models.newItemDescription" key-down="vm.states('creating').done({stop: false})" focus-when="[vm.states('creating').isActive(), !vm.states('editing').isActive()]" />
+			<button class="good" ng-click="vm.states('creating').done({stop: false})">Add</button>
 			<button class="bad" ng-click="vm.states('creating').stop()">Cancel</button>
 		</div>
 		
