@@ -88,15 +88,15 @@ TODO: fix padding on people names in mobile view
 			Looks like you don't have any shopping lists! Why don't you create one?
 		</div>
 		
-		<div class="create-box" ng-show="vm.creatingNewList">
-			<input type="text" ng-model="vm.newListName" key-down="vm.listsFunctions.create()" focus-when="vm.creatingNewList" />
-			<button class="good" ng-click="vm.listsFunctions.create()">+</button>
-			<button class="bad" ng-click="vm.listsFunctions.cancel()">Cancel</button>		
+		<div class="create-box" ng-show="vm.states('creating').isActive()">
+			<input type="text" ng-model="vm.models.newListName" key-down="vm.states('creating').done({stop: false})" focus-when="vm.states('creating').isActive()" />
+			<button class="good" ng-click="vm.states('creating').done({stop: false})">+</button>
+			<button class="bad" ng-click="vm.states('creating').stop()">Cancel</button>		
 		</div>
 		
 		<ul class="unstyled inline-list">
 			<li>
-				<button class="good" ng-show="vm.creatingNewList === false" ng-click="vm.listsFunctions.startCreating()">+</button>
+				<button class="good" ng-show="!vm.states('creating').isActive()" ng-click="vm.states('creating').start({model: 'vm.models.newListName'})">+</button>
 			</li>
 		</ul>
 	</script>

@@ -422,11 +422,16 @@
 		function setStringModelToModel(scope, string, val) {
 			var m = scope, keys, prevObject;
 			
+			// has to start with $scope.models, or vm.models, or whatever
+			
 			if(typeof string === 'string') {
 				keys = string.split('.');
 				// remove ControllerAs prefix, because we don't need it
 				// the user still uses it though in the string declaration, because it creates a namespace
 				keys.shift();
+				if(keys.length <2) {
+					throw new SyntaxError('A model should be prefixed with [scope].models');	
+				}
 
 				for(var i = 0; i<keys.length; i++) {
 					if(i === 0) {
