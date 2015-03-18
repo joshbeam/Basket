@@ -167,7 +167,8 @@ footer {
   position: fixed;
   left: 50%;
   top: 25%;
-  z-index: 9999; }
+  z-index: 9999;
+  width: 50%; }
   .prompt input[type="text"] {
     margin: 0 auto;
     display: block;
@@ -176,6 +177,7 @@ footer {
   .prompt .button-group {
     float: right; }
   .prompt > div {
+    width: 100%;
     background: #fff;
     position: relative;
     left: -50%;
