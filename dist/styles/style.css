@@ -25,6 +25,8 @@ button, a.button-link, input[type="button"], input[type="text"] {
   border: 1px solid #ccc;
   color: #777;
   padding: .5rem;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
   border-radius: 5px; }
   button:hover, a.button-link:hover, input[type="button"]:hover, input[type="text"]:hover {
     background: #f2f2f2; }
@@ -111,6 +113,8 @@ footer {
     font-size: 12.8px;
     color: #777;
     cursor: pointer;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     border-radius: 5px; }
 
 .sub-context-menu {
@@ -131,6 +135,8 @@ footer {
       border: none;
       margin: 0;
       padding: 1rem;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
       border-radius: 0; }
 
 .button-group {
@@ -142,13 +148,47 @@ footer {
   margin: 0 .5rem 0 0;
   cursor: pointer;
   color: #777;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
   border-radius: 5px; }
 
 .panel {
   color: #ccc;
   background: #eee;
+  -webkit-border-radius: 0.25rem;
+  -moz-border-radius: 0.25rem;
   border-radius: 0.25rem;
   padding: 2rem; }
 
 .create-box {
   margin: .5rem 0; }
+
+.prompt {
+  position: fixed;
+  left: 50%;
+  top: 25%;
+  z-index: 9999; }
+  .prompt input[type="text"] {
+    margin: 0 auto;
+    display: block;
+    width: 100%;
+    box-sizing: border-box; }
+  .prompt .button-group {
+    float: right; }
+  .prompt > div {
+    background: #fff;
+    position: relative;
+    left: -50%;
+    top: -75%;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0 0 20px #777;
+    -moz-box-shadow: 0 0 20px #777;
+    box-shadow: 0 0 20px #777; }
+    .prompt > div:after {
+      content: "";
+      display: table;
+      clear: both; }

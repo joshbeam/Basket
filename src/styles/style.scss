@@ -1,7 +1,29 @@
 // make REM mixin
 
 @mixin border-radius($radius) {
-  border-radius: $radius;
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	border-radius: $radius;
+}
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false) {
+	@if $inset {
+		-webkit-box-shadow:inset $top $left $blur $color;
+		-moz-box-shadow:inset $top $left $blur $color;
+		box-shadow:inset $top $left $blur $color;
+	} @else {
+		-webkit-box-shadow: $top $left $blur $color;
+		-moz-box-shadow: $top $left $blur $color;
+		box-shadow: $top $left $blur $color;
+	}
+}
+
+@mixin clearfix {
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
 }
 
 $font-stack: 'Helvetica', sans-serif;
@@ -117,20 +139,20 @@ input[type="text"] {
 }
 
 ul,ol {
-  &.unstyled {
-	list-style-type: none;
-	margin: 0;
-	padding: .5rem 0;
-  }
-	
+	&.unstyled {
+	  list-style-type: none;
+	  margin: 0;
+	  padding: .5rem 0;
+	}
+
 	&.inline-list li {
 		display: inline-block;
 	}
-  
-  li {
-	position: relative;
+
+	li {
+		position: relative;
 	padding: .5rem;
-  }
+		}
 	
 	&.item-list textarea {
 		width: 50%;
@@ -248,4 +270,35 @@ footer {
 
 .create-box {
 	margin: .5rem 0;
+}
+
+.prompt {
+	position: fixed;
+	left: 50%;
+	top: 25%;
+	z-index: 9999;
+	
+		input[type="text"] {
+			margin: 0 auto;
+			display: block;
+			width: 100%;
+			// substract padding from the width
+			box-sizing: border-box;
+		}
+	
+		.button-group {
+			float: right;
+		}
+	
+		> div {
+			background: $white;
+			position: relative;
+			left: -50%;
+			top: -75%;
+			padding: 2rem;
+			border: 1px solid $light-gray;
+			@include border-radius(10px);
+			@include box-shadow(0,0,20px,$dark-gray);
+			@include clearfix;
+		}
 }

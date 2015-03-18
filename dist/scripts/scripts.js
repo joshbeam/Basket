@@ -27980,9 +27980,9 @@ angular.module('Basket')
 	angular.module('Basket')
 		.controller('PeopleController',PeopleController);
 	
-	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade','stateManager'];
+	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade','stateManager','Prompt'];
 	
-	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade,stateManager) {
+	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade,stateManager,Prompt) {
 		var vm = this;
 		
 		$scope.$watch(function() {
@@ -28017,6 +28017,23 @@ angular.module('Basket')
 					people.remove(subject.name);						
 				}
 			}
+		},
+		{
+			name: 'adding',
+			done: function(subject,model) {
+				var exists = people.add({
+					name: model.trim(),
+					color: colorGenerator(255,255,255)
+				});
+				
+				if(exists === true) {
+					vm.models.prompt.title = 'Person already exists! Choose another name: ';
+				}
+
+				if(exists === false) {
+					this.stop();
+				}
+			}
 		});
 		
 		vm.states().config(function() {
@@ -28027,28 +28044,33 @@ angular.module('Basket')
 		
 		vm.people = people.populate();
 		vm.shade = shade;
+		vm.models = {
+			prompt: {
+				title: 'Choose a name: '	
+			}
+		};
 		vm.peopleFunctions = {
-			add: add,
+//			add: add,
 			href: href,
 			numberOfItems: numberOfItems,
 		};
 		
-		function add(_name_) {
-			var name = _name_ || window.prompt('Name of person: ',''),
-				exists;
-						
-			if(name && name.trim() !== '') {
-				exists = people.add({
-					name: name,
-					color: colorGenerator(255,255,255)
-				});
-			}
-			
-			if(exists === true) {
-				name = window.prompt('Person already exists! Choose another name: ','');
-				return add(name);
-			}
-		}
+//		function add(_name_) {
+//			var name = _name_ || new Prompt({message: 'Name of person:'}),
+//				exists;
+//						
+//			if(name && name.trim() !== '') {
+//				exists = people.add({
+//					name: name,
+//					color: colorGenerator(255,255,255)
+//				});
+//			}
+//			
+//			if(exists === true) {
+//				name = window.prompt('Person already exists! Choose another name: ','');
+//				return add(name);
+//			}
+//		}
 		
 		function href(person) {
 			if(vm.listName !== null) {

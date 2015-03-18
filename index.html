@@ -31,17 +31,29 @@ TODO: fix padding on people names in mobile view
 <body ng-app="Basket">
 	<h1>Basket</h1>
 	<div ng-view ng-cloak></div>
-	<ul ng-controller="PeopleController as vm" class="unstyled inline-list" ng-cloak>
-		<li><h5>People: </h5></li>
-		<li ng-show="vm.listName !== null; vm.people.length > 0">
-			<button ng-click="vm.peopleFunctions.href(); vm.states('options').stop()">all</button>
-		</li>
-		<li person ng-click="vm.peopleFunctions.href(person); vm.states('options').start({subject: person})" class="person" ng-style="{'background-color': '{{vm.shade(person.color, .75)}}', border: '1px solid {{person.color}}'}" ng-repeat="person in vm.people">
-			<button class="bad" ng-click="vm.states('options').done({keepSubject: true}).and('remove')" ng-show="vm.states('options').isActive() && person === vm.states('options').subject()">Delete</button>
-			{{person.name}} {{vm.peopleFunctions.numberOfItems(person)}}
-		</li>
-		<li><button ng-click="vm.peopleFunctions.add()">Add a Person</button></li>
-	</ul>
+	<div ng-controller="PeopleController as vm" ng-cloak>
+		<ul class="unstyled inline-list">
+			<li><h5>People: </h5></li>
+			<li ng-show="vm.listName !== null; vm.people.length > 0">
+				<button ng-click="vm.peopleFunctions.href(); vm.states('options').stop()">all</button>
+			</li>
+			<li person ng-click="vm.peopleFunctions.href(person); vm.states('options').start({subject: person})" class="person" ng-style="{'background-color': '{{vm.shade(person.color, .75)}}', border: '1px solid {{person.color}}'}" ng-repeat="person in vm.people">
+				<button class="bad" ng-click="vm.states('options').done({keepSubject: true}).and('remove')" ng-show="vm.states('options').isActive() && person === vm.states('options').subject()">Delete</button>
+				{{person.name}} {{vm.peopleFunctions.numberOfItems(person)}}
+			</li>
+			<li><button ng-click="vm.states('adding').start({model: 'vm.sm.models.nameOfNewPerson'})">Add a Person</button></li>
+		</ul>
+		<div class="prompt" ng-show="vm.states('adding').isActive()">
+			<div>
+				<h3>{{vm.models.prompt.title}}</h3>
+				<input type="text" ng-model="vm.sm.models.nameOfNewPerson" focus-when="vm.states('adding').isActive()" key-down="vm.states('adding').done({stop: false, keepModel: true})" />
+				<div class="button-group">
+					<button class="bad" ng-click="vm.states('adding').stop()">Cancel</button>
+					<button class="good" ng-click="vm.states('adding').done({stop: false, keepModel: true})">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<footer>
 		<small>
 			Implemented by Joshua Beam (<a href="https://www.github.com/joshbeam/Basket">GitHub</a>)		

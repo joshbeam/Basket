@@ -41,6 +41,26 @@
 					people.remove(subject.name);						
 				}
 			}
+		},
+		{
+			name: 'adding',
+			done: function(subject,model) {
+				var exists = people.add({
+					name: model.trim(),
+					color: colorGenerator(255,255,255)
+				});
+				
+				if(exists === true) {
+					vm.models.prompt.title = 'Person already exists!';
+				}
+
+				if(exists === false) {
+					this.stop();
+				}
+			},
+			stop: function() {
+				vm.models.prompt.title = 'Name:';
+			}
 		});
 		
 		vm.states().config(function() {
@@ -51,28 +71,19 @@
 		
 		vm.people = people.populate();
 		vm.shade = shade;
+		// state manager bug? re-builds model object every time, so if you declare
+		// a model like the one below, it will be overwritten by state manager
+		// should we just namespace all state manager models separately?
+		// e.g. vm.sm.models.whatever
+		vm.models = {
+			prompt: {
+				title: 'Name:'	
+			}
+		};
 		vm.peopleFunctions = {
-			add: add,
 			href: href,
 			numberOfItems: numberOfItems,
 		};
-		
-		function add(_name_) {
-			var name = _name_ || window.prompt('Name of person: ',''),
-				exists;
-						
-			if(name && name.trim() !== '') {
-				exists = people.add({
-					name: name,
-					color: colorGenerator(255,255,255)
-				});
-			}
-			
-			if(exists === true) {
-				name = window.prompt('Person already exists! Choose another name: ','');
-				return add(name);
-			}
-		}
 		
 		function href(person) {
 			if(vm.listName !== null) {
