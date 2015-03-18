@@ -6,9 +6,7 @@
 
 ###Features
 - Create and edit multiple shopping lists
-- Assign people to items
-- Share your list with your friends
-
+- Assign items to people
 ...
 
 ###Technical info
