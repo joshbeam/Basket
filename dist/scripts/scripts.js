@@ -26167,7 +26167,7 @@ var minlengthDirective = function() {
 
   if (window.angular.bootstrap) {
     //AngularJS is already loaded, so we can return here...
-    console.log('WARNING: Tried to load angular more than once.');
+    void 0;
     return;
   }
 
@@ -27223,15 +27223,15 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 		};
 		
 		$rootScope.$on('$routeChangeStart', function() {
-			console.log('start');
+			void 0;
 			$rootScope.layout.loading = true;
 		});
 
 		$rootScope.$on('$routeChangeSuccess', function() {
-			console.log('success');
+			void 0;
 			$timeout(function() {
 				$rootScope.layout.loading = false;
-				console.log($rootScope.layout);
+				void 0;
 			},250);	
 		});
 
@@ -28879,7 +28879,7 @@ angular.module('Basket')
 
 				this.update();		
 			} else {
-				window.alert('Choose a unique name');
+				void 0;
 			}
 		}
 		
