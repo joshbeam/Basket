@@ -27980,9 +27980,9 @@ angular.module('Basket')
 	angular.module('Basket')
 		.controller('PeopleController',PeopleController);
 	
-	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade','stateManager','Prompt'];
+	PeopleController.$inject = ['$scope','$location','$routeParams','Person','people','items','colorGenerator','shade','stateManager'];
 	
-	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade,stateManager,Prompt) {
+	function PeopleController($scope,$location,$routeParams,Person,people,items,colorGenerator,shade,stateManager) {
 		var vm = this;
 		
 		$scope.$watch(function() {
@@ -28027,12 +28027,15 @@ angular.module('Basket')
 				});
 				
 				if(exists === true) {
-					vm.models.prompt.title = 'Person already exists! Choose another name: ';
+					vm.models.prompt.title = 'Person already exists!';
 				}
 
 				if(exists === false) {
 					this.stop();
 				}
+			},
+			stop: function() {
+				vm.models.prompt.title = 'Name:';
 			}
 		});
 		
@@ -28044,33 +28047,19 @@ angular.module('Basket')
 		
 		vm.people = people.populate();
 		vm.shade = shade;
+		// state manager bug? re-builds model object every time, so if you declare
+		// a model like the one below, it will be overwritten by state manager
+		// should we just namespace all state manager models separately?
+		// e.g. vm.sm.models.whatever
 		vm.models = {
 			prompt: {
-				title: 'Choose a name: '	
+				title: 'Name:'	
 			}
 		};
 		vm.peopleFunctions = {
-//			add: add,
 			href: href,
 			numberOfItems: numberOfItems,
 		};
-		
-//		function add(_name_) {
-//			var name = _name_ || new Prompt({message: 'Name of person:'}),
-//				exists;
-//						
-//			if(name && name.trim() !== '') {
-//				exists = people.add({
-//					name: name,
-//					color: colorGenerator(255,255,255)
-//				});
-//			}
-//			
-//			if(exists === true) {
-//				name = window.prompt('Person already exists! Choose another name: ','');
-//				return add(name);
-//			}
-//		}
 		
 		function href(person) {
 			if(vm.listName !== null) {

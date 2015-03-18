@@ -39,12 +39,12 @@ TODO: fix padding on people names in mobile view
 				<button class="bad" ng-click="vm.states('options').done({keepSubject: true}).and('remove')" ng-show="vm.states('options').isActive() && person === vm.states('options').subject()">Delete</button>
 				{{person.name}} {{vm.peopleFunctions.numberOfItems(person)}}
 			</li>
-			<li><button ng-click="vm.states('adding').start({model: 'vm.models.nameOfNewPerson'})">Add a Person</button></li>
+			<li><button ng-click="vm.states('adding').start({model: 'vm.sm.models.nameOfNewPerson'})">Add a Person</button></li>
 		</ul>
 		<div class="prompt" ng-show="vm.states('adding').isActive()">
 			<div>
 				<h3>{{vm.models.prompt.title}}</h3>
-				<input type="text" ng-model="vm.models.nameOfNewPerson" />
+				<input type="text" ng-model="vm.sm.models.nameOfNewPerson" focus-when="vm.states('adding').isActive()" key-down="vm.states('adding').done({stop: false, keepModel: true})" />
 				<div class="button-group">
 					<button class="bad" ng-click="vm.states('adding').stop()">Cancel</button>
 					<button class="good" ng-click="vm.states('adding').done({stop: false, keepModel: true})">OK</button>
