@@ -28082,6 +28082,10 @@ angular.module('Basket')
 		}, function(n) {
 			// or, n.listName || null ?
 			vm.listName = n || null;
+			
+			if($routeParams.personName === undefined) {
+				vm.states('options').stop();	
+			}
 		});
 		
 		$scope.$watch(function() {
