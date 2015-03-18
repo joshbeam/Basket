@@ -27211,6 +27211,36 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 })();
 
 
+(function(app) {
+	
+	app.run(run);
+	
+	run.$inject = ['$rootScope','$timeout'];
+	
+	function run($rootScope,$timeout) {
+		$rootScope.layout = {
+			loading: false	
+		};
+		
+		$rootScope.$on('$routeChangeStart', function() {
+			console.log('start');
+			$rootScope.layout.loading = true;
+		});
+
+		$rootScope.$on('$routeChangeSuccess', function() {
+			console.log('success');
+			$timeout(function() {
+				$rootScope.layout.loading = false;
+				console.log($rootScope.layout);
+			},250);	
+		});
+
+		$rootScope.$on('$routeChangeError', function() {
+			$rootScope.layout.loading = false;
+		});
+	}
+	
+})(angular.module('Basket'));
 (function(angular) {
 	'use strict';
 	

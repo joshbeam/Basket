@@ -10,6 +10,12 @@ body, html {
 h1 {
   text-shadow: 0px 1px #ddd; }
 
+#title h1 {
+  display: inline-block; }
+#title img {
+  display: inline-block;
+  margin: 0 0 -.5rem 0; }
+
 h2 {
   color: #777; }
   h2 small {
