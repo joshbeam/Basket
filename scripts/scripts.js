@@ -27289,6 +27289,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 			this.$active = false;
 			this.$model = '';
 			this.$exclusiveOf = [];
+			this.$children = [];
 			this.$auxillary = config.auxillary || {};
 			this.$scope = {};
 		}
@@ -27315,7 +27316,10 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 			var config, countOfArrays = 0, type;
 			
 			if(!!_config_ && _config_.constructor === Function) {
+				
+				// _config_() returns an object literal
 				config = _config_();
+				
 				if('scope' in config) {
 					scope.call(this, config.scope);	
 				}
@@ -27344,6 +27348,25 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 						}
 					}
 				}
+				
+				if('children' in config) {
+					/*
+						example --
+						
+						children: {
+							editing: ['state1', 'state2']
+						}
+						
+						OR
+						
+						children: {
+							editing: 'state3'
+						}
+					*/
+					children.call(this,config.children);
+				}
+			} else {
+				throw new TypeError('Function object must be passed into StateGroup.prototype.config');	
 			}
 			
 			///////////
@@ -27390,6 +27413,32 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 				}.bind(this));
 			}
+			
+			function children(childrenObject) {
+				var parentStateName, parentState, childState;
+				
+				for(parentStateName in childrenObject) {
+					parentState = this.states.filter(filter)[0];
+
+					if(config.children[parentStateName].constructor === Array) {
+						angular.forEach(config.children[parentStateName],pushToChildren.bind(this));
+					} else {
+						pushToChildren(config.children[parentStateName]);	
+					}
+				}
+				
+				function filter(state) {
+					return state.$name === parentStateName;
+				}
+				
+				function pushToChildren(childName) {
+					childState = this.states.filter(function(state) {
+						return state.$name === childName;
+					})[0];
+					
+					parentState.$children.push(childState);
+				}
+			}
 		}
 		
 		function models() {
@@ -27411,7 +27460,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 		
 		function start(_config_) {
 			/*jshint validthis: true */
-			var config = {}, subject = {}, model = {};
+			/*
+				event is also passed in, just in case
+				something like e.stopPropagation() needs to happen
+			*/
+			var config = {}, subject = {}, model = {}, event = {};
 			if(!!_config_) {
 				config = _config_;
 				
@@ -27421,6 +27474,10 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 				
 				if('model' in config) {
 					model = config.model;	
+				}
+				
+				if('event' in config) {
+					event = config.event;	
 				}
 			}
 			
@@ -27440,15 +27497,23 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 			if(model.constructor !== Object && typeof model === 'string') {
 				resolvedModel = utils.getStringModelToModel(this, this.$scope, model);
 			}
-									
+			
+			// stop all states that are exclusive of this state
 			angular.forEach(this.$exclusiveOf,function(state) {
 				if(state.isActive()) {
 					state.stop();
 				}
-			}.bind(this));
+			});
+			
+			// 'reset' (stop) all children states
+			angular.forEach(this.$children,function(childState) {
+				if(childState.isActive()) {
+					childState.stop();
+				}
+			});
 			
 			if(this.$start !== null) {
-				return this.$start(this.$subject,resolvedModel);
+				return this.$start(this.$subject,resolvedModel,event);
 			}
 		}
 		
@@ -27459,24 +27524,45 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 				
 					{
 						keepSubject: {true} | {false} [default: false]
+						event: EventObject [default: undefined]
 					}
 			*/
-			this.$active = false;
-			
 			// config is always passed in by default (from the .done() method)
 			// still use error checking just in case
+			var event;
+			
 			if(!!config) {
 				if('keepSubject' in config) {
 					this.$subject = config.keepSubject === true ? this.$subject : {};
 				}
+				
+				if('event' in config) {
+					event = config.event;	
+				}
+			} else {
+				// reset the subject by default
+				this.$subject = {};	
 			}
 			
-			// reset the model
-			this.model('');
-			this.$model = '';
+			// reset the model, only if there was one to begin with
+			// #question
+			// should I rename $model to $modelString? Makes more syntactical sense
+			if(this.$model !== '') {
+				// #question
+				// should i reset the model to '' or {}?
+				// in start, it resets the model to {}
+				this.model('');
+				this.$model = '';
+			}
+			
+			// might as well check... .stop() can be called from controllers,
+			// and if the state isn't active, it doesn't need to run this.$active = false
+			if(this.$active === true) {
+				this.$active = false;
+			}
 			
 			if(this.$stop !== null) {
-				return this.$stop();
+				return this.$stop(event);
 			}
 		}
 		
@@ -27489,9 +27575,10 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 						keepSubject: {true} | {false} [default: false]
 						stop: {true} | {false} [default: true]
 						keepModel: {true} | {false} [default: false]
+						event: EventObject [default: undefined]
 					}
 			*/
-			var keepSubject = false, keepModel = false, runStop = true;
+			var keepSubject = false, keepModel = false, runStop = true, event;
 			
 			if(!!config) {
 				if('keepSubject' in config) {
@@ -27517,13 +27604,17 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 						throw new TypeError('keepModel must contain a boolean value');	
 					}
 				}
+				
+				if('event' in config) {
+					event = config.event;	
+				}
 			}
 						
 			// need to re-resolve the model to see the updates from the scope
 			var resolvedModel = utils.getStringModelToModel(this, this.$scope, this.$model);
 			
 			if(this.$done !== null) {
-				this.$done(this.$subject,resolvedModel);
+				this.$done(this.$subject,resolvedModel,event);
 			}
 			
 			// [default]
@@ -27536,7 +27627,8 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 			// [default]
 			if(runStop === true) {
 				this.stop({
-					keepSubject: keepSubject
+					keepSubject: keepSubject,
+					event: event
 				});
 			}
 			
@@ -27974,7 +28066,7 @@ angular.module('Basket')
 		}
 	}
 })();
-(function() {
+(function(angular) {
 	'use strict';
 	
 	angular.module('Basket')
@@ -27986,11 +28078,25 @@ angular.module('Basket')
 		var vm = this;
 		
 		$scope.$watch(function() {
-			return $routeParams;
+			return $routeParams.listName;
 		}, function(n) {
 			// or, n.listName || null ?
-			vm.listName = $routeParams.listName || null;
-		},true);
+			vm.listName = n || null;
+		});
+		
+		$scope.$watch(function() {
+			return $routeParams.personName;
+		}, function(n) {
+			var config = {
+				subject: vm.people.filter(filterSubject)[0]	
+			};
+			
+			vm.states('options').start(config);
+			
+			function filterSubject(person) {
+				return person.get('name') === n;	
+			}
+		});
 		
 		$scope.$watch(function() {
 			return items.get();
@@ -28014,7 +28120,7 @@ angular.module('Basket')
 						$location.path('/list/'+vm.listName);
 					}
 
-					people.remove(subject.name);						
+					people.remove(subject.get('name'));						
 				}
 			}
 		},
@@ -28089,7 +28195,7 @@ angular.module('Basket')
 			}			
 		}
 	}
-})();
+})(angular);
 (function() {
 	'use strict';
 	
@@ -28408,9 +28514,10 @@ angular.module('Basket')
 			},
 			// should probably use an object of parameters instead
 			done: function(subject,model) {
-				//subject.set('comments',vm.models.commentsForItemBeingEdited);
 				subject.set('comments',model);
 			},
+			// #question
+			// rename auxillary to 'and'? to match with the syntax of the .and() method
 			auxillary: {
 				remove: function(subject) {
 					subject.set('comments','');	
@@ -28421,7 +28528,6 @@ angular.module('Basket')
 		var editingDescription = {
 			name: 'editingDescription',
 			done: function(subject,model) {
-//				subject.set('description',vm.models.editedDescription);
 				subject.set('description',model);
 			}
 		};
@@ -28429,8 +28535,23 @@ angular.module('Basket')
 		// need to be able to remove currently assigned person
 		var assigning = {
 			name: 'assigning',
-			done: function(subject,model) {
-//				subject.set('person',vm.models.assignedTo);
+			start: function() {
+				// #question
+				// add 'unless' method?
+				// e.g. vm.states('assigning').start().unless(vm.people.length === 0)
+				if(vm.people.length === 0) {
+					this.stop();	
+				}
+			},
+			done: function(subject,_model_) {
+				var model;
+				
+				if(_model_ === false) {
+					model = '';	
+				} else {
+					model = _model_;	
+				}
+				
 				subject.set('person',model);
 
 				// change path to newly assigned person to see all their items
@@ -28438,8 +28559,6 @@ angular.module('Basket')
 			}
 		};		
 		
-		// maybe try to be able to use this syntax: vm.states('editing').subject()
-		// etc...
 		vm.states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);
 
 		vm.states().config(function() {
@@ -28447,18 +28566,14 @@ angular.module('Basket')
 				group2 = ['editing','creating'],
 				config = {
 					exclusive: [group1,group2],
-					scope: vm
+					scope: vm,
+					children: {
+						editing: group1	
+					}
 				};
 			
 			return config;
 		});
-				
-//		vm.models = {
-//			commentsForItemBeingEdited: '',
-//			editedDescription: '',
-//			assignedTo: '',
-//			newItemDescription: ''
-//		};
 
 		vm.itemFunctions = {
 			togglePurchased: togglePurchased,
