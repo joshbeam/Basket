@@ -33,6 +33,10 @@ gulp.task('html',function() {
 			'img': {
 				src: 'images/loading.gif',
 				tpl: '<img src="%s" ng-show="layout.loading">'
+			},
+			'favicon': {
+				src: 'images/favicon.ico?v=1.1',
+				tpl: '<link rel="shortcut icon" href="%s">'
 			}
 		}))
 		.pipe(gulp.dest('dist'));
