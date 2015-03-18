@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
 	'use strict';
 	
 	angular.module('Basket')
@@ -10,11 +10,25 @@
 		var vm = this;
 		
 		$scope.$watch(function() {
-			return $routeParams;
+			return $routeParams.listName;
 		}, function(n) {
 			// or, n.listName || null ?
-			vm.listName = $routeParams.listName || null;
-		},true);
+			vm.listName = n || null;
+		});
+		
+		$scope.$watch(function() {
+			return $routeParams.personName;
+		}, function(n) {
+			var config = {
+				subject: vm.people.filter(filterSubject)[0]	
+			};
+			
+			vm.states('options').start(config);
+			
+			function filterSubject(person) {
+				return person.get('name') === n;	
+			}
+		});
 		
 		$scope.$watch(function() {
 			return items.get();
@@ -38,7 +52,7 @@
 						$location.path('/list/'+vm.listName);
 					}
 
-					people.remove(subject.name);						
+					people.remove(subject.get('name'));						
 				}
 			}
 		},
@@ -113,4 +127,4 @@
 			}			
 		}
 	}
-})();
+})(angular);

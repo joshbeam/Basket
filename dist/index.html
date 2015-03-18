@@ -100,7 +100,7 @@ TODO: fix padding on people names in mobile view
 				{{item.get('description')}}
 			</a>
 			
-			<div class="item-edit-field" ng-show="!vm.states('assigning').isActive() && vm.states('editingDescription').isActive() && item === vm.states('editing').subject() && !vm.states('addingComments').isActive()">
+			<div class="item-edit-field" ng-show="!vm.states('assigning').isActive() && vm.states('editingDescription').isActive() && item === vm.states('editing').subject() && !vm.states('addingComments').isActive()" ng-click="$event.stopPropagation();">
 				<input type="text" ng-model="vm.models.editedDescription" />
 				<button class="good" ng-click="vm.states('editingDescription').done()">Save</button>
 				<button class="bad" ng-click="vm.states('editingDescription').stop()">Cancel</button>
@@ -110,7 +110,7 @@ TODO: fix padding on people names in mobile view
 				{{item.get('comments')}}
 			</div>
 			
-			<div class="item-edit-field" ng-show="!vm.states('assigning').isActive() && vm.states('addingComments').isActive() && item === vm.states('editing').subject() && !vm.states('editingDescription').isActive()">
+			<div class="item-edit-field" ng-show="!vm.states('assigning').isActive() && vm.states('addingComments').isActive() && item === vm.states('editing').subject() && !vm.states('editingDescription').isActive()" ng-click="$event.stopPropagation();">
 				<textarea ng-model="vm.models.commentsForItemBeingEdited"></textarea>
 				<br>
 				<button class="good" ng-click="vm.states('addingComments').done()">Save</button>
@@ -118,8 +118,9 @@ TODO: fix padding on people names in mobile view
 				<button class="bad" ng-click="vm.states('addingComments').stop()">Cancel</button>
 			</div>
 			
-			<div class="item-edit-field" ng-show="vm.states('assigning').isActive() && !vm.states('addingComments').isActive() && item === vm.states('editing').subject() && !vm.states('editingDescription').isActive()">
-				<label for="{{item.description}}-assignTo-{{person.name}}" ng-repeat="person in vm.people"><input type="radio" ng-model="vm.models.assignedTo" value="{{person.name}}" ng-checked="{{item.person === person.name}}" id="{{item.description}}-assignTo-{{person.name}}" />{{person.name}} </label>
+			<div class="item-edit-field" ng-show="vm.states('assigning').isActive() && !vm.states('addingComments').isActive() && item === vm.states('editing').subject() && !vm.states('editingDescription').isActive()" ng-click="$event.stopPropagation();">
+				<label ng-show="{{item.person !== ''}}" for="{{item.description}}-assignTo-noOne"><input type="radio" ng-model="vm.models.assignedTo" value="" id="{{item.description}}-assignTo-noOne" />No One</label>
+				<label for="{{item.description}}-assignTo-{{person.name}}" ng-repeat="person in vm.people"><input type="radio" ng-model="vm.models.assignedTo" value="{{person.name}}" ng-checked="{{item.person === person.name}}" id="{{item.description}}-assignTo-{{person.name}}" />{{person.name}}</label>
 				<div class="button-group">
 					<button class="good" ng-click="vm.states('assigning').done()">Assign</button>
 					<button class="bad" ng-click="vm.states('assigning').stop()">Cancel</button>

@@ -56,9 +56,10 @@
 			},
 			// should probably use an object of parameters instead
 			done: function(subject,model) {
-				//subject.set('comments',vm.models.commentsForItemBeingEdited);
 				subject.set('comments',model);
 			},
+			// #question
+			// rename auxillary to 'and'? to match with the syntax of the .and() method
 			auxillary: {
 				remove: function(subject) {
 					subject.set('comments','');	
@@ -69,7 +70,6 @@
 		var editingDescription = {
 			name: 'editingDescription',
 			done: function(subject,model) {
-//				subject.set('description',vm.models.editedDescription);
 				subject.set('description',model);
 			}
 		};
@@ -77,8 +77,23 @@
 		// need to be able to remove currently assigned person
 		var assigning = {
 			name: 'assigning',
-			done: function(subject,model) {
-//				subject.set('person',vm.models.assignedTo);
+			start: function() {
+				// #question
+				// add 'unless' method?
+				// e.g. vm.states('assigning').start().unless(vm.people.length === 0)
+				if(vm.people.length === 0) {
+					this.stop();	
+				}
+			},
+			done: function(subject,_model_) {
+				var model;
+				
+				if(_model_ === false) {
+					model = '';	
+				} else {
+					model = _model_;	
+				}
+				
 				subject.set('person',model);
 
 				// change path to newly assigned person to see all their items
@@ -86,8 +101,6 @@
 			}
 		};		
 		
-		// maybe try to be able to use this syntax: vm.states('editing').subject()
-		// etc...
 		vm.states = new stateManager.StateGroup(editing,creating,addingComments,editingDescription,assigning);
 
 		vm.states().config(function() {
@@ -95,18 +108,14 @@
 				group2 = ['editing','creating'],
 				config = {
 					exclusive: [group1,group2],
-					scope: vm
+					scope: vm,
+					children: {
+						editing: group1	
+					}
 				};
 			
 			return config;
 		});
-				
-//		vm.models = {
-//			commentsForItemBeingEdited: '',
-//			editedDescription: '',
-//			assignedTo: '',
-//			newItemDescription: ''
-//		};
 
 		vm.itemFunctions = {
 			togglePurchased: togglePurchased,
