@@ -56,6 +56,17 @@ h1 {
   text-shadow: 0px 1px $super-light-gray;
 }
 
+#title {
+	h1 {
+		display: inline-block;	
+	}
+	
+	img {
+		display: inline-block;
+		margin: 0 0 -.5rem 0;
+	}
+}
+
 h2 {
   color: $dark-gray;
 	
@@ -153,6 +164,11 @@ ul,ol {
 		position: relative;
 	padding: .5rem;
 		}
+	
+//	&.item-list {
+//		max-height: 320px;
+//		overflow: auto;
+//	}
 	
 	&.item-list textarea {
 		width: 50%;

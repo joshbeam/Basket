@@ -8,18 +8,12 @@
 	
 <!-- 
 TODO: add key-down directive to all inputs
-TODO: be able to delete users
 TODO: add sharing functionality
-TODO: unit testing
-TODO: make one-step build process
-TODO: loading icons
 TODO: documentation
 TODO: wireframes
 TODO: option to rename list
-TODO: custom prompt modal function
 TODO: remove 'all' when there are no people at all
 TODO: make creation box go away when clicking item
-TODO: fix padding on people names in mobile view
 -->
 	
 	<!-- prevent IE9 quirks mode -->
@@ -29,7 +23,12 @@ TODO: fix padding on people names in mobile view
   	<title>Basket</title>
 </head>
 <body ng-app="Basket">
-	<h1>Basket</h1>
+	<div id="title">
+		<h1>Basket</h1>
+		<!-- build:img -->
+		<img src="src/images/loading.gif" ng-show="layout.loading" />
+		<!-- endbuild -->
+	</div>
 	<div ng-view ng-cloak></div>
 	<div ng-controller="PeopleController as vm" ng-cloak>
 		<ul class="unstyled inline-list">
@@ -66,6 +65,7 @@ TODO: fix padding on people names in mobile view
 	<script src="src/scripts/lib/angular/angular-route.min.js"></script>
 	
 	<script src="src/scripts/app/basket/basket.module.js"></script>
+	<script src="src/scripts/app/basket/basket.run.js"></script>
 	<script src="src/scripts/app/basket/basket.routes.js"></script>
 	<script src="src/scripts/app/helpers/color-generator.factory.js"></script>
 	<script src="src/scripts/app/helpers/shade.factory.js"></script>

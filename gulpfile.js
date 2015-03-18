@@ -27,7 +27,11 @@ gulp.task('html',function() {
 	return gulp.src('index.html')
 		.pipe(htmlreplace({
 			'js':'scripts/scripts.min.js',
-			'css':'styles/style.css'
+			'css':'styles/style.css',
+			'img': {
+				src: 'images/loading.gif',
+				tpl: '<img src="%s" ng-show="layout.loading">'
+			}
 		}))
 		.pipe(gulp.dest('dist'));
 });
